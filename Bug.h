@@ -38,6 +38,17 @@ private:
     std::list<std::pair<int, int>> path;
 
 public:
+    //enum for direction
+    //got the the idea from https://www.simplilearn.com/tutorials/cpp-tutorial/cpp-enum
+    //direction in which the bug is facing :
+    //1=North, 2=East, 3=South, 4=West (or use enum)
+    enum Direction {
+        North = 1,
+        East = 2,
+        South = 3,
+        West = 4
+    };
+
     //default constructor
     Bug();
 
@@ -61,6 +72,8 @@ public:
 
     void setPosition(const std::pair<int, int> &position);
 
+    //direction in which the bug is facing :
+    //1=North, 2=East, 3=South, 4=West (or use enum)
     int getDirection() const;
 
     void setDirection(int direction);
