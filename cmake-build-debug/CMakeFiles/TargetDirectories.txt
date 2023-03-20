@@ -1,0 +1,3 @@
+C:/Users/orjie/CLionProjects/Bug_Project1/cmake-build-debug/CMakeFiles/Bug_Project1.dir
+C:/Users/orjie/CLionProjects/Bug_Project1/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/orjie/CLionProjects/Bug_Project1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
