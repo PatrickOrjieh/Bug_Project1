@@ -117,3 +117,7 @@ bool Bug::isWayBlocked() {
 //implementation is require in the Bug base class, so move()
 //can be made a pure virtual function in the Bug class.
 //virtual void move() = 0;
+
+Bug::~Bug() {
+    std::cout << "Bug destructor called" << std::endl;
+}
