@@ -19,15 +19,6 @@ private:
     //<utility> standard library. (0,0) is top left cell on board.
     std::pair<int, int> position;
 
-    //direction in which the bug is facing :
-    //1=North, 2=East, 3=South, 4=West (or use enum)
-    enum Direction {
-        North = 1,
-        East = 2,
-        South = 3,
-        West = 4
-    } direction;
-
     //Size of the bug (initially 1-20); biggest bug wins in a fight
     //and others on same cell are eaten. Winner grows during a
     //fight by the sum of the sizes of other bugs eaten.
@@ -41,6 +32,17 @@ private:
     // Path taken by a bug. (i.e. the List of positions (on grid) that a
     //bug visited.)
     std::list<std::pair<int, int>> path;
+
+    //in order for the iother bug classes to acccess the direction i had to make it protected
+protected:
+//direction in which the bug is facing :
+//1=North, 2=East, 3=South, 4=West (or use enum)
+enum Direction {
+    North = 1,
+    East = 2,
+    South = 3,
+    West = 4
+} direction;
 
 public:
     //default constructor
