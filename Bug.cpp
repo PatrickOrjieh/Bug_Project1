@@ -9,13 +9,13 @@
 Bug::Bug(){
     this->id = 0;
     this->position = std::make_pair(0,0);
-    this->direction = 0;
+    this->direction = Direction::North; // set default direction to North using enum
     this->size = 0;
     this->alive = false;
 }
 
 //constructor
-Bug::Bug(int id, std::pair<int, int> position, int direction, int size, bool alive) {
+Bug::Bug(int id, std::pair<int, int> position, Direction direction, int size, bool alive) {
     this->id = id;
     this->position = position;
     this->direction = direction;
@@ -45,12 +45,11 @@ void Bug::setPosition(const std::pair<int, int> &p) {
 
 //direction in which the bug is facing :
 //1=North, 2=East, 3=South, 4=West (or use enum)
-//make sure the direction is between 1 and 4 using enum
-int Bug::getDirection() const {
+Bug::Direction Bug::getDirection() const {
     return direction;
 }
 
-void Bug::setDirection(int d) {
+void Bug::setDirection(Direction d) {
     Bug::direction = d;
 }
 
@@ -93,31 +92,32 @@ void Bug::setPath(const std::list<std::pair<int, int>> &p) {
 //    bool isWayBlocked();
 bool Bug::isWayBlocked() {
     //if the bug is facing north and is at the top of the board
-    if (this->direction == 1 && this->position.second == 0) {
+    if (this->direction == Direction::North && this->position.second == 0) {
         return true;
     }
     //if the bug is facing east and is at the right of the board
-    if (this->direction == 2 && this->position.first == 9) {
+    if (this->direction == Direction::East && this->position.first == 9) {
         return true;
     }
     //if the bug is facing south and is at the bottom of the board
-    if (this->direction == 3 && this->position.second == 9) {
+    if (this->direction == Direction::South && this->position.second == 9) {
         return true;
     }
     //if the bug is facing west and is at the left of the board
-    if (this->direction == 4 && this->position.first == 0) {
+    if (this->direction == Direction::West && this->position.first == 0) {
         return true;
     }
     return false;
 }
 
-//All derived classes must implement logic to move a bug
-//from its current position to a new position based on
-//movement rules for the particular bug type. No
-//implementation is require in the Bug base class, so move()
-//can be made a pure virtual function in the Bug class.
-//virtual void move() = 0;
+//Moves the bug one cell in the direction it is facing.
+//If the bug is against an edge of the board AND if it is
+//facing in the direction of that edge, then, set a new
+//direction at random. (Repeat until bug can move forward).
+//Record new position in the bug's path history.
+//    void move();
 
+//the destructor
 Bug::~Bug() {
     std::cout << "Bug destructor called" << std::endl;
 }

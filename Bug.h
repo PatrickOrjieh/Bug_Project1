@@ -2,8 +2,8 @@
 // Created by orjie on 20/03/2023.
 //
 
-#ifndef BUG_PROJECT1_BUG_H
-#define BUG_PROJECT1_BUG_H
+#ifndef BUG_PROJECT_BUG_H
+#define BUG_PROJECT_BUG_H
 
 #include <string>
 #include <utility>
@@ -21,7 +21,12 @@ private:
 
     //direction in which the bug is facing :
     //1=North, 2=East, 3=South, 4=West (or use enum)
-    int direction;
+    enum Direction {
+        North = 1,
+        East = 2,
+        South = 3,
+        West = 4
+    } direction;
 
     //Size of the bug (initially 1-20); biggest bug wins in a fight
     //and others on same cell are eaten. Winner grows during a
@@ -38,45 +43,24 @@ private:
     std::list<std::pair<int, int>> path;
 
 public:
-    //enum for direction
-    //got the the idea from https://www.simplilearn.com/tutorials/cpp-tutorial/cpp-enum
-    //direction in which the bug is facing :
-    //1=North, 2=East, 3=South, 4=West (or use enum)
-    enum Direction {
-        North = 1,
-        East = 2,
-        South = 3,
-        West = 4
-    };
-
     //default constructor
     Bug();
 
     //make up different constructors with different parameters
-    Bug(int id, std::pair<int, int> position, int direction, int size, bool alive);
-
-//    Bug(int id, std::pair<int, int> position, int direction, int size);
-//
-//    Bug(int id, std::pair<int, int> position, int direction);
-//
-//    Bug(int id, std::pair<int, int> position);
-//
-//    Bug(int id);
+    Bug(int id, std::pair<int, int> position, Direction direction, int size, bool alive);
 
     //getters and setters
     int getId() const;
 
     void setId(int id);
 
-    const std::pair<int, int> &getPosition() const;
+    const std::pair<int, int>& getPosition() const;
 
-    void setPosition(const std::pair<int, int> &position);
+    void setPosition(const std::pair<int, int>& position);
 
-    //direction in which the bug is facing :
-    //1=North, 2=East, 3=South, 4=West (or use enum)
-    int getDirection() const;
+    Direction getDirection() const;
 
-    void setDirection(int direction);
+    void setDirection(Direction direction);
 
     int getSize() const;
 
@@ -86,9 +70,9 @@ public:
 
     void setAlive(bool alive);
 
-    const std::list<std::pair<int, int>> &getPath() const;
+    const std::list<std::pair<int, int>>& getPath() const;
 
-    void setPath(const std::list<std::pair<int, int>> &path);
+    void setPath(const std::list<std::pair<int, int>>& path);
 
     //methods
     //All derived classes must implement logic to move a bug
@@ -96,7 +80,6 @@ public:
     //movement rules for the particular bug type. No
     //implementation is require in the Bug base class, so move()
     //can be made a pure virtual function in the Bug class.
-    //kept giving error so i added void
     virtual void move() = 0;
 
     //Checks if a bug is against an edge of the board AND if it is
@@ -107,4 +90,5 @@ public:
     ~Bug(); //destructor
 };
 
-#endif //BUG_PROJECT1_BUG_H
+
+#endif //BUG_PROJECT_BUG_H
