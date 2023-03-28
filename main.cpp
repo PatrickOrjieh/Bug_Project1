@@ -14,6 +14,35 @@ int main() {
     Board board;
     string filename = readString("Please enter the name of the file to read the bug data from: ");
     board.initialiseBoard(filename);
+
+    while(true){
+        printMenu();
+        int choice = readInt("Please enter your choice: ");
+        switch(choice){
+            case 1:
+                cout << "Displaying all the bugs on the board" << endl;
+                break;
+            case 2:
+                cout << "Finding a bug by id" << endl;
+                break;
+            case 3:
+                cout << "Tapping the bug board" << endl;
+                break;
+            case 4:
+                cout << "Displaying the life history of all the bugs" << endl;
+                break;
+            case 5:
+                cout << "Exiting" << endl;
+                return 0;
+            case 6:
+                cout << "Displaying all cells" << endl;
+                break;
+            default:
+                cout << "Invalid choice, please enter a number between 1 and 6" << endl;
+                break;
+        }
+    }
+
     return 0;
 }
 
