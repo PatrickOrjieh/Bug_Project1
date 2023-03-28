@@ -92,23 +92,27 @@ void Bug::setPath(const std::list<std::pair<int, int>> &p) {
 //[Used by the move() function], board is siz2 10x10
 //    bool isWayBlocked();
 bool Bug::isWayBlocked() {
-    //if the bug is facing north and is at the top of the board
-    if (this->direction == Direction::North && this->position.second == 0) {
-        return true;
+    const int BOARD_SIZE = 10;
+    bool wayBlocked = false;
+    switch (direction) {
+        case Direction::North:
+            wayBlocked = (position.second == 0);
+            break;
+        case Direction::East:
+            wayBlocked = (position.first == (BOARD_SIZE - 1));
+            break;
+        case Direction::South:
+            wayBlocked = (position.second == (BOARD_SIZE - 1));
+            break;
+        case Direction::West:
+            wayBlocked = (position.first == 0);
+            break;
+        default:
+            // handle invalid direction
+            break;
     }
-    //if the bug is facing east and is at the right of the board
-    if (this->direction == Direction::East && this->position.first == 9) {
-        return true;
-    }
-    //if the bug is facing south and is at the bottom of the board
-    if (this->direction == Direction::South && this->position.second == 9) {
-        return true;
-    }
-    //if the bug is facing west and is at the left of the board
-    if (this->direction == Direction::West && this->position.first == 0) {
-        return true;
-    }
-    return false;
+
+    return wayBlocked;
 }
 
 //Moves the bug one cell in the direction it is facing.
