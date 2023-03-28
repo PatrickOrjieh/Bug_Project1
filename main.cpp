@@ -6,10 +6,6 @@ using namespace std;
 
 //void to print the menu
 void printMenu();
-//to validate user int input
-int readInt(const string& message);
-//to validate user string input
-string readString(const string& message);
 
 int main() {
     Board board;
@@ -30,6 +26,7 @@ int main() {
                 break;
             case 2:
                 cout << "Finding a bug by id" << endl;
+                board.findBugById();
                 break;
             case 3:
                 cout << "Tapping the bug board" << endl;
@@ -50,39 +47,6 @@ int main() {
     }
 
     return 0;
-}
-
-//to validate user int input
-int readInt(const std::string& message) {
-    int input;
-    while (true) {
-        std::cout << message;
-        std::string line;
-        if (!std::getline(std::cin, line)) {
-            std::cerr << "Error: failed to read input\n";
-            exit(1);
-        }
-        try {
-            input = std::stoi(line);
-            break;
-        } catch (std::invalid_argument& e) {
-            std::cout << "Invalid input, please enter an integer.\n";
-        } catch (std::out_of_range& e) {
-            std::cout << "Input out of range, please enter an integer.\n";
-        }
-    }
-    return input;
-}
-
-//to validate user string input
-string readString(const std::string& message) {
-    cout << message;
-    string line;
-    if (!getline(cin, line)) {
-        cerr << "Error: failed to read input\n";
-        exit(1);
-    }
-    return line;
 }
 
 //void to print the menu
