@@ -120,6 +120,50 @@ void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int s
     bug_vector.push_back(crawler);
 }
 
+//to display all bugs
+void Board::displayAllBugs() const {
+    for (const auto& bug : bug_vector) {
+        std::cout << bug->getId() << " ";
+        if (dynamic_cast<Crawler*>(bug)) {
+            std::cout << "Crawler ";
+        } else {
+            std::cout << "Hopper ";
+        }
+        std::cout << "(" << bug->getPosition().first << "," << bug->getPosition().second << ") ";
+        std::cout << bug->getSize() << " ";
+
+        switch (bug->getDirection()) {
+            case Direction::North:
+                std::cout << "North ";
+                break;
+            case Direction::East:
+                std::cout << "East ";
+                break;
+            case Direction::South:
+                std::cout << "South ";
+                break;
+            case Direction::West:
+                std::cout << "West ";
+                break;
+        }
+
+        if (dynamic_cast<Hopper*>(bug)) {
+            std::cout << dynamic_cast<Hopper*>(bug)->getHopLength() << " ";
+        } else {
+            std::cout << "- ";
+        }
+
+        if (bug->isAlive()) {
+            std::cout << "Alive";
+        } else {
+            std::cout << "Dead";
+        }
+
+        std::cout << std::endl;
+    }
+}
+
+
 //destructor
 Board::~Board() {
     //delete the bugs

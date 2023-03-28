@@ -49,6 +49,9 @@ public:
     //void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size) {
     void createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size);
 
+    //method to display all bugs on the board
+    void displayAllBugs() const;
+
     //destructor
     ~Board();
 };
