@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include "Board.h"
 using namespace std;
 
 //void to print the menu
@@ -9,7 +11,9 @@ int readInt(const string& message);
 string readString(const string& message);
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Board board;
+    string filename = readString("Please enter the name of the file to read the bug data from: ");
+    board.initialiseBoard(filename);
     return 0;
 }
 
@@ -39,7 +43,7 @@ int readInt(const std::string& message) {
 string readString(const std::string& message) {
     cout << message;
     string line;
-    if (getline(cin, line)) {
+    if (!getline(cin, line)) {
         cerr << "Error: failed to read input\n";
         exit(1);
     }

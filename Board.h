@@ -23,7 +23,6 @@
 
 #include "Bug.h"
 #include <vector>
-#include <adomd.h>
 #include "Direction.h"
 
 class Board {

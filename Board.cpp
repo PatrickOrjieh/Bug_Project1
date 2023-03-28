@@ -7,54 +7,6 @@
 #include "Crawler.h"
 #include "Bug.h"
 #include "Direction.h"
-////
-//// Created by orjie on 28/03/2023.
-////
-//
-//#ifndef BUG_PROJECT_BOARD_H
-//#define BUG_PROJECT_BOARD_H
-//
-////For convenience we want to be able to store all bugs in a vector of some type – that will store both
-////Crawlers and Hoppers – so that we can iterate over all bugs and treat then in a similar way.
-////However, we can’t use a vector of Bug objects ( vector<Bug> ), because the derived class objects
-////(e.g. Hopper) would not fit into a Bug object vector element. So, one option is to create a vector of
-////pointers to Bug objects ( vector<Bug *> ). The elements of this vector are of type ‘pointer to Bug’, so
-////they can point at any derived class objects of Bug (e.g. Crawler or Hopper).
-////Therefore, we must declare a vector of pointers to Bug objects [ in main() ], and populate it by
-////reading data from a text file (“bugs.txt”), instantiating Bug objects dynamically on the Heap, and
-////adding their addresses to the vector.
-////vector<Bug*> bug_vector;
-////Board Class
-////Board class encapsulates the vector and cells. No access to internal workings of board is to be
-////‘leaked’ outside the Board class, so no references or pointers to any internal objects are to be
-////returned. Return only copies of data if required. (So, internally pointers can be passed around, but
-////for public interface functions, provide only copies of objects. Consider the interface.)
-//
-//#include "Bug.h"
-//#include <vector>
-//#include <adomd.h>
-//
-//class Board {
-//    //private members
-//    static const int BOARD_SIZE = 10;
-//    //vector of pointers to Bug objects
-//    std::vector<Bug*> bug_vector;
-//    // 2D array of pairs representing the cells on the board
-//    std::pair<int,int> cells[BOARD_SIZE][BOARD_SIZE];
-//
-//public:
-//    //default constructor
-//    Board();
-//
-//    //methos ot initialise the board from a text file that has the bug data
-//    void initialiseBoard(std::string filename);
-//
-//    //destructor
-//    ~Board();
-//};
-//
-//
-//#endif //BUG_PROJECT_BOARD_H
 
 #include <iostream>
 #include <fstream>
@@ -78,38 +30,40 @@ Board::Board() {
 //size = int and if the bug is a hopper then the hop distance is also included and as the data is read checks that
 //the position is valid and that the bug is not already in that position. for all parts do proper error handling and error checking
 void Board::initialiseBoard(const std::string& filename) {
-    ifstream file(filename);
+    std::ifstream file(filename);
     if (!file.is_open()) {
-        cout << "Error: File not found" << endl;
+        std::cout << "Error: File not found" << std::endl;
         return;
     }
 
-    string line;
-    while (getline(file, line)) {
-        stringstream lineStream(line);
-        vector<string> lineData;
-        string bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr;
-        getline(lineStream, bugType, ';');
-        getline(lineStream, bugIdStr, ';');
-        getline(lineStream, bugXStr, ';');
-        getline(lineStream, bugYStr, ';');
-        getline(lineStream, directionStr, ';');
-        getline(lineStream, sizeStr, ';');
-        getline(lineStream, hopLengthStr, ';');
+    std::string line;
+    while (std::getline(file, line)) {
+        std::stringstream lineStream(line);
+        std::vector<std::string> lineData;
+        std::string bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr;
+        std::getline(lineStream, bugType, ';');
+        std::getline(lineStream, bugIdStr, ';');
+        std::getline(lineStream, bugXStr, ';');
+        std::getline(lineStream, bugYStr, ';');
+        std::getline(lineStream, directionStr, ';');
+        std::getline(lineStream, sizeStr, ';');
+        if (bugType == "H") {
+            std::getline(lineStream, hopLengthStr, ';');
+        }
 
         if (!isValidBugData(bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr)) {
-            cout << "Error: Invalid bug data" << endl;
+            std::cout << "Error: Invalid bug data" << std::endl;
             continue;
         }
 
-        int bugId = stoi(bugIdStr);
-        int bugX = stoi(bugXStr);
-        int bugY = stoi(bugYStr);
-        int direction = stoi(directionStr);
-        int size = stoi(sizeStr);
-        int hopLength = stoi(hopLengthStr);
-
+        int bugId = std::stoi(bugIdStr);
+        int bugX = std::stoi(bugXStr);
+        int bugY = std::stoi(bugYStr);
+        int direction = std::stoi(directionStr);
+        int size = std::stoi(sizeStr);
+        int hopLength = 0;
         if (bugType == "H") {
+            hopLength = std::stoi(hopLengthStr);
             createHopperBug(bugId, bugX, bugY, direction, size, hopLength);
         } else {
             createCrawlerBug(bugId, bugX, bugY, direction, size);
