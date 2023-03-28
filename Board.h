@@ -38,7 +38,16 @@ public:
     Board();
 
     //methos ot initialise the board from a text file that has the bug data
-    void initialiseBoard(std::string filename);
+    void initialiseBoard(const std::string& filename);
+
+    //bool Board::isValidBugData(const std::string& bugType, const std::string& bugIdStr, const std::string& bugXStr, const std::string& bugYStr, const std::string& directionStr, const std::string& sizeStr, const std::string& hopLengthStr) const {
+    bool isValidBugData(const std::string& bugType, const std::string& bugIdStr, const std::string& bugXStr, const std::string& bugYStr, const std::string& directionStr, const std::string& sizeStr, const std::string& hopLengthStr) const;
+
+    //void Board::createHopperBug(int bugId, int bugX, int bugY, int direction, int size, int hopLength) {
+    void createHopperBug(int bugId, int bugX, int bugY, int direction, int size, int hopLength);
+
+    //void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size) {
+    void createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size);
 
     //destructor
     ~Board();
