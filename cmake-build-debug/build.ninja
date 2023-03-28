@@ -79,6 +79,12 @@ build CMakeFiles/Bug_Project1.dir/Board.cpp.obj: CXX_COMPILER__Bug_Project1_Debu
   OBJECT_DIR = CMakeFiles\Bug_Project1.dir
   OBJECT_FILE_DIR = CMakeFiles\Bug_Project1.dir
 
+build CMakeFiles/Bug_Project1.dir/Utils.cpp.obj: CXX_COMPILER__Bug_Project1_Debug C$:/Users/orjie/CLionProjects/Bug_Project1/Utils.cpp || cmake_object_order_depends_target_Bug_Project1
+  DEP_FILE = CMakeFiles\Bug_Project1.dir\Utils.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\Bug_Project1.dir
+  OBJECT_FILE_DIR = CMakeFiles\Bug_Project1.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Bug_Project1
@@ -87,7 +93,7 @@ build CMakeFiles/Bug_Project1.dir/Board.cpp.obj: CXX_COMPILER__Bug_Project1_Debu
 #############################################
 # Link the executable Bug_Project1.exe
 
-build Bug_Project1.exe: CXX_EXECUTABLE_LINKER__Bug_Project1_Debug CMakeFiles/Bug_Project1.dir/main.cpp.obj CMakeFiles/Bug_Project1.dir/Bug.cpp.obj CMakeFiles/Bug_Project1.dir/Crawler.cpp.obj CMakeFiles/Bug_Project1.dir/Hopper.cpp.obj CMakeFiles/Bug_Project1.dir/Board.cpp.obj
+build Bug_Project1.exe: CXX_EXECUTABLE_LINKER__Bug_Project1_Debug CMakeFiles/Bug_Project1.dir/main.cpp.obj CMakeFiles/Bug_Project1.dir/Bug.cpp.obj CMakeFiles/Bug_Project1.dir/Crawler.cpp.obj CMakeFiles/Bug_Project1.dir/Hopper.cpp.obj CMakeFiles/Bug_Project1.dir/Board.cpp.obj CMakeFiles/Bug_Project1.dir/Utils.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Bug_Project1.dir
