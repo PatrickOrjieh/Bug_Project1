@@ -52,6 +52,9 @@ public:
     //method to display all bugs on the board
     void displayAllBugs() const;
 
+    //to check if the bugs is empty
+    bool isBugVectorEmpty() const;
+
     //destructor
     ~Board();
 };

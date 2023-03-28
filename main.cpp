@@ -21,7 +21,11 @@ int main() {
         switch(choice){
             case 1:
                 cout << "Displaying all the bugs on the board" << endl;
-                board.displayAllBugs();
+                if(board.isBugVectorEmpty()){
+                    cout << "There are no bugs on the board" << endl;
+                } else {
+                    board.displayAllBugs();
+                }
                 break;
             case 2:
                 cout << "Finding a bug by id" << endl;

@@ -120,6 +120,11 @@ void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int s
     bug_vector.push_back(crawler);
 }
 
+//to check if the bugs is empty
+bool Board::isBugVectorEmpty() const{
+    return bug_vector.empty();
+}
+
 //to display all bugs
 void Board::displayAllBugs() const {
     for (const auto& bug : bug_vector) {
