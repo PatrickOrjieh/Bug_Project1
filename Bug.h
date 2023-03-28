@@ -12,7 +12,7 @@
 
 //Abstract Base Class) ( Data members to be declared as “private”)
 class Bug {
-private:
+protected:
     //Identification number (id) for a bug (1,2,3,4,…)
     int id;
 
