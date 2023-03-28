@@ -24,8 +24,9 @@
 #include "Bug.h"
 #include <vector>
 #include <adomd.h>
+#include "Direction.h"
 
-class Board: public Bug {
+class Board {
     //private members
     static const int BOARD_SIZE = 10;
     //vector of pointers to Bug objects

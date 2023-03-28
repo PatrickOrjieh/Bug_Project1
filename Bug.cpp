@@ -4,6 +4,7 @@
 
 #include "Bug.h"
 #include <iostream>
+#include "Direction.h"
 
 //default constructor
 Bug::Bug(){
@@ -45,7 +46,7 @@ void Bug::setPosition(const std::pair<int, int> &p) {
 
 //direction in which the bug is facing :
 //1=North, 2=East, 3=South, 4=West (or use enum)
-Bug::Direction Bug::getDirection() const {
+Direction Bug::getDirection() const {
     return direction;
 }
 

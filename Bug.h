@@ -8,6 +8,7 @@
 #include <string>
 #include <utility>
 #include <list>
+#include "Direction.h"
 
 //Abstract Base Class) ( Data members to be declared as “private”)
 class Bug {
@@ -33,16 +34,8 @@ private:
     //bug visited.)
     std::list<std::pair<int, int>> path;
 
-    //in order for the iother bug classes to acccess the direction i had to make it protected
-protected:
-//direction in which the bug is facing :
-//1=North, 2=East, 3=South, 4=West (or use enum)
-enum Direction {
-    North = 1,
-    East = 2,
-    South = 3,
-    West = 4
-} direction;
+    //for the direction of the bug
+    Direction direction;
 
 public:
     //default constructor
