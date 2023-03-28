@@ -5,6 +5,8 @@ using namespace std;
 void printMenu();
 //to validate user int input
 int readInt(const string& message);
+//to validate user string input
+string readString(const string& message);
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
@@ -31,6 +33,17 @@ int readInt(const std::string& message) {
         }
     }
     return input;
+}
+
+//to validate user string input
+string readString(const std::string& message) {
+    cout << message;
+    string line;
+    if (getline(cin, line)) {
+        cerr << "Error: failed to read input\n";
+        exit(1);
+    }
+    return line;
 }
 
 //void to print the menu
