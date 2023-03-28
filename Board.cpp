@@ -185,6 +185,18 @@ void Board::findBugById() const {
 }
 
 
+//4. Tap the Bug Board
+//This option simulates tapping the bug board, which prompts all the bugs to move. This will require
+//calling the move() function on all bugs. The move() method must be implemented differently for
+//Crawler and Hopper. (See class details above). Later you will be asked to implement fight/eat.
+//We recommend that you implement only move() initially. The fight and eat behaviour can be
+//developed later, when all other functionality has been implemented.
+void Board::tapBoard() {
+    for (Bug* bug : bug_vector) {
+        bug->move();
+    }
+}
+
 //destructor
 Board::~Board() {
     //delete the bugs

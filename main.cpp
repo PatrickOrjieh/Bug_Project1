@@ -30,6 +30,7 @@ int main() {
                 break;
             case 3:
                 cout << "Tapping the bug board" << endl;
+                board.tapBoard();
                 break;
             case 4:
                 cout << "Displaying the life history of all the bugs" << endl;
