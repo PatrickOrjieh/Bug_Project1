@@ -77,6 +77,10 @@ public:
     //can be made a pure virtual function in the Bug class.
     virtual void move() = 0;
 
+    //make the displayBug() function virtual so that it can be overridden
+    //in the derived classes (Crawler and Hopper)
+    virtual void displayBug()=0;
+
     //Checks if a bug is against an edge of the board AND if it is
     //facing in the direction of that edge. If so, its way is blocked.
     //[Used by the move() function]
