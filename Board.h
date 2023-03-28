@@ -55,6 +55,9 @@ public:
     //to check if the bugs is empty
     bool isBugVectorEmpty() const;
 
+    //find bug by id
+    void findBugById() const;
+
     //destructor
     ~Board();
 };

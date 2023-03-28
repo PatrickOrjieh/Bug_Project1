@@ -7,6 +7,7 @@
 #include "Crawler.h"
 #include "Bug.h"
 #include "Direction.h"
+#include "Utils.h"
 
 #include <iostream>
 #include <fstream>
@@ -166,6 +167,21 @@ void Board::displayAllBugs() const {
 
         std::cout << std::endl;
     }
+}
+
+////3. Find a Bug
+//    //User to be asked to input a bug id, and the system will search for that bug. Display bug details if
+//    //found, otherwise display “bug xxx not found”
+//    void findBugById() const; make use of the displayBug from the Crawler and Hopper classes
+void Board::findBugById() const {
+    int bugId = utils::readInt("Enter bug id: ");
+    for (Bug* bug : bug_vector) {
+        if (bug->getId() == bugId) {
+            bug->displayBug();
+            return;
+        }
+    }
+    std::cout << "Bug " << bugId << " not found" << std::endl;
 }
 
 
