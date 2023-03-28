@@ -3,10 +3,34 @@ using namespace std;
 
 //void to print the menu
 void printMenu();
+//to validate user int input
+int readInt(const string& message);
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
     return 0;
+}
+
+//to validate user int input
+int readInt(const std::string& message) {
+    int input;
+    while (true) {
+        std::cout << message;
+        std::string line;
+        if (!std::getline(std::cin, line)) {
+            std::cerr << "Error: failed to read input\n";
+            exit(1);
+        }
+        try {
+            input = std::stoi(line);
+            break;
+        } catch (std::invalid_argument& e) {
+            std::cout << "Invalid input, please enter an integer.\n";
+        } catch (std::out_of_range& e) {
+            std::cout << "Input out of range, please enter an integer.\n";
+        }
+    }
+    return input;
 }
 
 //void to print the menu
