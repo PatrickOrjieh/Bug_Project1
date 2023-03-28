@@ -25,14 +25,13 @@
 #include <vector>
 #include <adomd.h>
 
-class Board {
+class Board: public Bug {
     //private members
+    static const int BOARD_SIZE = 10;
     //vector of pointers to Bug objects
     std::vector<Bug*> bug_vector;
-    //board size
-    static const int BOARD_SIZE = 10;
-    //2D array of Cell objects makwthe size of the board
-    Cell board[BOARD_SIZE][BOARD_SIZE];
+    // 2D array of pairs representing the cells on the board
+    std::pair<int,int> cells[BOARD_SIZE][BOARD_SIZE];
 
 public:
     //default constructor
