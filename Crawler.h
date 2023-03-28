@@ -23,6 +23,8 @@ public:
     //can be made a pure virtual function in the Bug class.
     void move() override;
 
+    void displayBug() override;
+
     ~Crawler(); //destructor
 };
 

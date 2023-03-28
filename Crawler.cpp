@@ -62,6 +62,11 @@ void Crawler::move() {
     }
 }
 
+//method to display the bug in a good way with all its attributes
+void Crawler::displayBug() {
+    std::cout << "Crawler " << getId() << " at (" << getPosition().first << "," << getPosition().second << ") facing " << getDirection() << " size " << getSize() << " alive " << isAlive() << std::endl;
+}
+
 //destructor
 Crawler::~Crawler() {
 
