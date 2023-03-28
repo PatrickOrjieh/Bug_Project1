@@ -40,6 +40,9 @@ public:
     //move the bug
     void move() override;
 
+    //display the bug
+    void displayBug() override;
+
     //destructor
     ~Hopper();
 };

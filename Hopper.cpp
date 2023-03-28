@@ -104,6 +104,11 @@ void Hopper::move() {
     }
 }
 
+//display the bug's information
+void Hopper::displayBug() {
+    std::cout << "Hopper " << getId() << " at (" << getPosition().first << "," << getPosition().second << ") facing " << getDirection() << " with hop length " << hopLength << "alive? " << isAlive() << " and size " << getSize() << std::endl;
+}
+
 Hopper::~Hopper() {
 
 }
