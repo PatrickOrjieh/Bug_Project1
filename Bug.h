@@ -89,7 +89,8 @@ public:
     //[Used by the move() function]
     bool isWayBlocked();
 
-    ~Bug(); //destructor
+    //virtual destructor
+    virtual ~Bug();
 };
 
 

@@ -117,7 +117,7 @@ bool Bug::isWayBlocked() {
 //Record new position in the bug's path history.
 //    void move();
 
-//the destructor
-Bug::~Bug() {
+//the virtual destructor
+Bug::~Bug(){
     std::cout << "Bug destructor called" << std::endl;
 }
