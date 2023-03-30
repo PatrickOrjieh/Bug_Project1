@@ -197,6 +197,31 @@ void Board::tapBoard() {
     }
 }
 
+//5. Display Life History of all bugs
+//Display each bug’s details and the path that it travelled from beginning to death. The history will be
+//recorded in the path field (which is a chronological list of positions). (Type list must be used)
+//101 Crawler Path: (0,0),(0,1),(1,1),(2,1),(3,1) Eaten by 203
+//102 Hopper Path: (2,2),(2,3), Alive!
+void Board::displayLifeHistoryOfAllBugs() const {
+    for (Bug* bug : bug_vector) {
+        std::cout << bug->getId() << " ";
+        if (dynamic_cast<Crawler*>(bug)) {
+            std::cout << "Crawler";
+        } else if (dynamic_cast<Hopper*>(bug)) {
+            std::cout << "Hopper";
+        }
+        std::cout << " Path: ";
+        for (auto const& pos : bug->getPath()) {
+            std::cout << "(" << pos.first << "," << pos.second << ")";
+            if (&pos != &bug->getPath().back()) {
+                std::cout << ",";
+            }
+        }
+        std::cout << std::endl;
+    }
+}
+
+
 //destructor
 Board::~Board() {
     //delete the bugs

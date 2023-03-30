@@ -1,7 +1,15 @@
 # ninja log v5
-27	467	7017264838407769	CMakeFiles/Bug_Project1.dir/Hopper.cpp.obj	15f20b9d4f555e2b
 756	926	7017264842948781	Bug_Project1.exe	8ed94a17ebc794e6
-16	572	7017264839438005	CMakeFiles/Bug_Project1.dir/Crawler.cpp.obj	f80b2bb1fd72fe43
+27	467	7017264838407769	CMakeFiles/Bug_Project1.dir/Hopper.cpp.obj	15f20b9d4f555e2b
 21	755	7017264841298437	CMakeFiles/Bug_Project1.dir/Board.cpp.obj	ba7a09ded37ea942
+16	572	7017264839438005	CMakeFiles/Bug_Project1.dir/Crawler.cpp.obj	f80b2bb1fd72fe43
 4	646	7017264840188167	CMakeFiles/Bug_Project1.dir/Bug.cpp.obj	f3a7bdc190d4b04a
 10	612	7017264839578044	CMakeFiles/Bug_Project1.dir/main.cpp.obj	fdc1c0147c50a91c
+2	223	7018386298096514	build.ninja	244c6e7182057dca
+30	462	7018386303471120	CMakeFiles/Bug_Project1.dir/Utils.cpp.obj	fab7bcd167cabd48
+3	505	7018386303911223	CMakeFiles/Bug_Project1.dir/Crawler.cpp.obj	f80b2bb1fd72fe43
+14	510	7018386303961235	CMakeFiles/Bug_Project1.dir/main.cpp.obj	fdc1c0147c50a91c
+9	563	7018386304491328	CMakeFiles/Bug_Project1.dir/Bug.cpp.obj	f3a7bdc190d4b04a
+24	687	7018386305731629	CMakeFiles/Bug_Project1.dir/Board.cpp.obj	ba7a09ded37ea942
+3	413	7018386556264010	CMakeFiles/Bug_Project1.dir/Hopper.cpp.obj	15f20b9d4f555e2b
+414	580	7018386557864367	Bug_Project1.exe	169f1d3ced217817

@@ -34,6 +34,7 @@ int main() {
                 break;
             case 4:
                 cout << "Displaying the life history of all the bugs" << endl;
+                board.displayLifeHistoryOfAllBugs();
                 break;
             case 5:
                 cout << "Exiting" << endl;

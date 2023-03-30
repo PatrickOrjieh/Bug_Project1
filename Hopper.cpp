@@ -3,6 +3,7 @@
 //
 
 #include "Hopper.h"
+#include <iostream>
 
 Hopper::Hopper() {
     hopLength = 0;

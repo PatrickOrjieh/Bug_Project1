@@ -66,6 +66,13 @@ public:
     //developed later, when all other functionality has been implemented.
     void tapBoard();
 
+    //5. Display Life History of all bugs
+    //Display each bug’s details and the path that it travelled from beginning to death. The history will be
+    //recorded in the path field (which is a chronological list of positions). (Type list must be used)
+    //101 Crawler Path: (0,0),(0,1),(1,1),(2,1),(3,1) Eaten by 203
+    //102 Hopper Path: (2,2),(2,3), Alive!
+    void displayLifeHistoryOfAllBugs() const;
+
     //destructor
     ~Board();
 };
