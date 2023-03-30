@@ -13,6 +13,8 @@ namespace utils {
     int readInt(const std::string& message);
     // Reads a string from the user.
     std::string readString(const std::string& message);
+    //get currentDatetIME
+    std::string getCurrentDateTime();
 }
 
 
