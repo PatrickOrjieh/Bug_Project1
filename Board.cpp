@@ -202,22 +202,40 @@ void Board::tapBoard() {
 //recorded in the path field (which is a chronological list of positions). (Type list must be used)
 //101 Crawler Path: (0,0),(0,1),(1,1),(2,1),(3,1) Eaten by 203
 //102 Hopper Path: (2,2),(2,3), Alive!
-void Board::displayLifeHistoryOfAllBugs() const {
+//void Board::displayLifeHistoryOfAllBugs() const {
+//    for (Bug* bug : bug_vector) {
+//        std::cout << bug->getId() << " ";
+//        if (dynamic_cast<Crawler*>(bug)) {
+//            std::cout << "Crawler";
+//        } else if (dynamic_cast<Hopper*>(bug)) {
+//            std::cout << "Hopper";
+//        }
+//        std::cout << " Path: ";
+//        for (auto const& pos : bug->getPath()) {
+//            std::cout << "(" << pos.first << "," << pos.second << ")";
+//            if (&pos != &bug->getPath().back()) {
+//                std::cout << ",";
+//            }
+//        }
+//        std::cout << std::endl;
+//    }
+//}
+void Board::displayLifeHistoryOfAllBugs(std::ostream& out) const {
     for (Bug* bug : bug_vector) {
-        std::cout << bug->getId() << " ";
+        out << bug->getId() << " ";
         if (dynamic_cast<Crawler*>(bug)) {
-            std::cout << "Crawler";
+            out << "Crawler";
         } else if (dynamic_cast<Hopper*>(bug)) {
-            std::cout << "Hopper";
+            out << "Hopper";
         }
-        std::cout << " Path: ";
+        out << " Path: ";
         for (auto const& pos : bug->getPath()) {
-            std::cout << "(" << pos.first << "," << pos.second << ")";
+            out << "(" << pos.first << "," << pos.second << ")";
             if (&pos != &bug->getPath().back()) {
-                std::cout << ",";
+                out << ",";
             }
         }
-        std::cout << std::endl;
+        out << std::endl;
     }
 }
 

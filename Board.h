@@ -24,6 +24,7 @@
 #include "Bug.h"
 #include <vector>
 #include "Direction.h"
+#include <iostream>
 
 class Board {
     //private members
@@ -71,7 +72,8 @@ public:
     //recorded in the path field (which is a chronological list of positions). (Type list must be used)
     //101 Crawler Path: (0,0),(0,1),(1,1),(2,1),(3,1) Eaten by 203
     //102 Hopper Path: (2,2),(2,3), Alive!
-    void displayLifeHistoryOfAllBugs() const;
+//    void displayLifeHistoryOfAllBugs() const;
+    void displayLifeHistoryOfAllBugs(std::ostream& out = std::cout) const;
 
     //destructor
     ~Board();
