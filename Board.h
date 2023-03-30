@@ -80,6 +80,16 @@ public:
     //displayLifeHistoryOfAllBugs() function above.
     void writeLifeHistoryOfAllBugsToFile() const;
 
+    //7. Display all Cells
+    //Display all cells in sequence, and the name and id of all bugs currently occupying each cell.
+    //(0,0): empty // meaning: cell (0,0) is empty
+    //(0,1): empty
+    //(0,2): Crawler 101, Crawler 103 // i.e. the 2 Crawler bugs in this cell
+    //(etc…)
+    //(1,0): Hopper 102
+    //(1,1): Crawler 105, Hopper 107, Crawler 109
+    void displayAllCells() const;
+
     //destructor
     ~Board();
 };

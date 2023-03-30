@@ -273,9 +273,32 @@ void Board::writeLifeHistoryOfAllBugsToFile() const {
     file.close();
 }
 
-
-
-
+//7. Display all Cells
+//Display all cells in sequence, and the name and id of all bugs currently occupying each cell.
+//(0,0): empty // meaning: cell (0,0) is empty
+//(0,1): empty
+//(0,2): Crawler 101, Crawler 103 // i.e. the 2 Crawler bugs in this cell
+//(etc…)
+//(1,0): Hopper 102
+//(1,1): Crawler 105, Hopper 107, Crawler 109
+//void displayAllCells() const;
+void Board::displayAllCells() const {
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            std::cout << "(" << i << "," << j << "): ";
+            for (Bug* bug : bug_vector) {
+                if (bug->getPosition().first == i && bug->getPosition().second == j) {
+                    if (dynamic_cast<Crawler*>(bug)) {
+                        std::cout << "Crawler " << bug->getId() << " ";
+                    } else if (dynamic_cast<Hopper*>(bug)) {
+                        std::cout << "Hopper " << bug->getId() << " ";
+                    }
+                }
+            }
+            std::cout << std::endl;
+        }
+    }
+}
 
 //destructor
 Board::~Board() {

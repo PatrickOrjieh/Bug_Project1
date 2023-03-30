@@ -42,6 +42,7 @@ int main() {
                 return 0;
             case 6:
                 cout << "Displaying all cells" << endl;
+                board.displayAllCells();
                 break;
             default:
                 cout << "Invalid choice, please enter a number between 1 and 6" << endl;
