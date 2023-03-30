@@ -38,6 +38,7 @@ int main() {
                 break;
             case 5:
                 cout << "Exiting" << endl;
+                board.writeLifeHistoryOfAllBugsToFile();
                 return 0;
             case 6:
                 cout << "Displaying all cells" << endl;

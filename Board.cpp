@@ -8,6 +8,9 @@
 #include "Bug.h"
 #include "Direction.h"
 #include "Utils.h"
+#include <fstream>
+#include <filesystem>
+#include <stdexcept>
 
 #include <iostream>
 #include <fstream>
@@ -238,6 +241,40 @@ void Board::displayLifeHistoryOfAllBugs(std::ostream& out) const {
         out << std::endl;
     }
 }
+
+//6. Exit - Write the life history of all bugs to a text file called “bugs_life_history_date_time.out”
+//where date_time is the current date and time. The file should be in the same format as the
+//displayLifeHistoryOfAllBugs() function above. The file should be created in the same directory as
+//the executable.
+void Board::writeLifeHistoryOfAllBugsToFile() const {
+    // Get the directory path to put the file
+    std::filesystem::path dir_path = "C:/Users/orjie/CLionProjects/Bug_Project1";
+
+    // Get the file name for the output file
+    std::string file_name = "bugs_life_history_" + utils::getCurrentDateTime() + ".out";
+    // Replace invalid characters with '_'
+    std::replace(file_name.begin(), file_name.end(), ':', '_');
+    // Combine the directory path and file name to create the file path
+    std::filesystem::path file_path = dir_path / file_name;
+
+    // Open the output file
+    std::ofstream file(file_path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open file for writing.");
+    }
+
+    // Write the life history of all bugs to the output file
+    displayLifeHistoryOfAllBugs(file);
+    if (!file.good()) {
+        throw std::runtime_error("Error writing to file.");
+    }
+
+    // Close the output file
+    file.close();
+}
+
+
+
 
 
 //destructor

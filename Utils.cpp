@@ -9,6 +9,7 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 
 namespace utils {
     int readInt(const std::string& message) {
@@ -51,9 +52,12 @@ namespace utils {
         std::tm time_info = *std::localtime(&now);
         // Create a string stream for formatting the output
         std::ostringstream oss;
-        // Format the output as "YYYY-MM-DD HH:MM:SS"
+        // Format the output as "YYYY-MM-DD HH_MM_SS"
         oss << std::put_time(&time_info, "%Y-%m-%d %H:%M:%S");
-        return oss.str();
+        std::string str = oss.str();
+        // Replace invalid characters with '_'
+        std::replace(str.begin(), str.end(), ':', '_');
+        return str;
     }
 }
 

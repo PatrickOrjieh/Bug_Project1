@@ -75,6 +75,11 @@ public:
 //    void displayLifeHistoryOfAllBugs() const;
     void displayLifeHistoryOfAllBugs(std::ostream& out = std::cout) const;
 
+    //6. Exit - Write the life history of all bugs to a text file called “bugs_life_history_date_time.out”
+    //where date_time is the current date and time. The format of the file should be the same as the
+    //displayLifeHistoryOfAllBugs() function above.
+    void writeLifeHistoryOfAllBugsToFile() const;
+
     //destructor
     ~Board();
 };
