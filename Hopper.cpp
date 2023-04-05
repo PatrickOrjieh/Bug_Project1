@@ -81,7 +81,7 @@ void Hopper::move() {
         }
         setPosition(currentPosition);
         currentPath.push_back(currentPosition);
-        setPath(currentPath);
+        addPath(currentPosition);
     }
         // if the bug can't hop the full distance, it hits the edge and falls on that square
     else {
@@ -101,13 +101,34 @@ void Hopper::move() {
         }
         setPosition(currentPosition);
         currentPath.push_back(currentPosition);
-        setPath(currentPath);
+        addPath(currentPosition);
     }
 }
 
 //display the bug's information
+//102 Hopper (5,8) 13 North 4 Alive
 void Hopper::displayBug() {
-    std::cout << "Hopper " << getId() << " at (" << getPosition().first << "," << getPosition().second << ") facing " << getDirection() << " with hop length " << hopLength << "alive? " << isAlive() << " and size " << getSize() << std::endl;
+    std::cout << getId() << " Hopper (" << getPosition().first << "," << getPosition().second << ") " << getSize() << " ";
+    switch (getDirection()) {
+        case North:
+            std::cout << "North ";
+            break;
+        case East:
+            std::cout << "East ";
+            break;
+        case South:
+            std::cout << "South ";
+            break;
+        case West:
+            std::cout << "West ";
+            break;
+    }
+    std::cout << hopLength << " ";
+    if (isAlive()) {
+        std::cout << "Alive" << std::endl;
+    } else {
+        std::cout << "Dead" << std::endl;
+    }
 }
 
 Hopper::~Hopper() {

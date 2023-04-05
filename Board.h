@@ -30,9 +30,12 @@ class Board {
     //private members
     static const int BOARD_SIZE = 10;
     //vector of pointers to Bug objects
-    std::vector<Bug*> bug_vector;
+//    std::vector<Bug*> bug_vector;
     // 2D array of pairs representing the cells on the board
-    std::pair<int,int> cells[BOARD_SIZE][BOARD_SIZE];
+//    std::pair<int,int> cells[BOARD_SIZE][BOARD_SIZE];
+
+    //initializing the board to be a vector of bug cells
+    std::vector <Bug*> cells[100];
 
 public:
     //default constructor
@@ -50,13 +53,15 @@ public:
     //void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size) {
     void createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size);
 
-    //method to display all bugs on the board
+    //display all bugs
     void displayAllBugs() const;
 
-    //to check if the bugs is empty
-    bool isBugVectorEmpty() const;
+    //check if the bugs are empty
+    bool isBoardEmpty() const;
 
-    //find bug by id
+    //3. Find a Bug
+    //User to be asked to input a bug id, and the system will search for that bug. Display bug details if
+    //found, otherwise display “bug xxx not found”
     void findBugById() const;
 
     //4. Tap the Bug Board

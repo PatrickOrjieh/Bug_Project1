@@ -3,8 +3,8 @@
 //
 
 #include "Bug.h"
-#include <iostream>
 #include "Direction.h"
+#include <iostream>
 
 //default constructor
 Bug::Bug(){
@@ -83,8 +83,13 @@ const std::list<std::pair<int, int>> & Bug::getPath() const {
     return path;
 }
 
-void Bug::setPath(const std::list<std::pair<int, int>> &p) {
+void Bug::setPath(const std::list<std::pair<int, int>>& p) {
     Bug::path = p;
+}
+
+//to add a position to the path
+void Bug::addPath(std::pair<int, int> position) {
+    path.push_back(position);
 }
 
 //Checks if a bug is against an edge of the board AND if it is
@@ -123,6 +128,6 @@ bool Bug::isWayBlocked() {
 //    void move();
 
 //the virtual destructor
-Bug::~Bug(){
+Bug::~Bug() {
     std::cout << "Bug destructor called" << std::endl;
 }

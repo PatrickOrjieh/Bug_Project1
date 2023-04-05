@@ -5,6 +5,7 @@
 
 #include "Crawler.h"
 #include <iostream>
+#include "Direction.h"
 
 //default constructor
 Crawler::Crawler() : Bug() {
@@ -50,8 +51,7 @@ void Crawler::move() {
         //set the new position of the bug
         setPosition(currentPosition);
         //add the new position to the path of the bug
-        currentPath.push_back(currentPosition);
-        setPath(currentPath);
+        addPath(currentPosition);
     } else {
         //if the bug is at the edge of the board
         //set a new direction at random
@@ -63,8 +63,29 @@ void Crawler::move() {
 }
 
 //method to display the bug in a good way with all its attributes
+//like this 101 Crawler (3,4) 18 East Dead
+//dhow twh action direction no tjust the number
 void Crawler::displayBug() {
-    std::cout << "Crawler " << getId() << " at (" << getPosition().first << "," << getPosition().second << ") facing " << getDirection() << " size " << getSize() << " alive " << isAlive() << std::endl;
+    std::cout << getId() << " Crawler (" << getPosition().first << "," << getPosition().second << ") " << getSize() << " ";
+    switch (getDirection()) {
+        case North:
+            std::cout << "North ";
+            break;
+        case South:
+            std::cout << "South ";
+            break;
+        case East:
+            std::cout << "East ";
+            break;
+        case West:
+            std::cout << "West ";
+            break;
+    }
+    if (isAlive()) {
+        std::cout << "Alive" << std::endl;
+    } else {
+        std::cout << "Dead" << std::endl;
+    }
 }
 
 //destructor

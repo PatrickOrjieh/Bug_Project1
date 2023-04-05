@@ -69,6 +69,8 @@ public:
 
     void setPath(const std::list<std::pair<int, int>>& path);
 
+    void addPath(std::pair<int, int> position);
+
     //methods
     //All derived classes must implement logic to move a bug
     //from its current position to a new position based on
@@ -86,7 +88,8 @@ public:
     //[Used by the move() function]
     bool isWayBlocked();
 
-    //virtual destructor
+//    ~Bug(); //destructor
+    //it might be better to make the destructor virtual
     virtual ~Bug();
 };
 

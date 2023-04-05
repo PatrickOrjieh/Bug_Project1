@@ -18,7 +18,7 @@ int main() {
         switch(choice){
             case 1:
                 cout << "Displaying all the bugs on the board" << endl;
-                if(board.isBugVectorEmpty()){
+                if(board.isBoardEmpty()){
                     cout << "There are no bugs on the board" << endl;
                 } else {
                     board.displayAllBugs();
@@ -49,7 +49,6 @@ int main() {
                 break;
         }
     }
-
     return 0;
 }
 
