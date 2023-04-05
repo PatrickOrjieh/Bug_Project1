@@ -72,6 +72,19 @@ public:
     //developed later, when all other functionality has been implemented.
     void tapBoard();
 
+    //to fight
+    void fight(std::vector<Bug*> &vector_bug);
+//    void fight();
+
+//int Board::countAliveBugs() const {
+    int countAliveBugs() const;
+
+    //Bug* Board::findLastAliveBug() const {
+    Bug* findLastAliveBug() const;
+
+    //to simulate the fight
+    void simulate();
+
     //5. Display Life History of all bugs
     //Display each bug’s details and the path that it travelled from beginning to death. The history will be
     //recorded in the path field (which is a chronological list of positions). (Type list must be used)

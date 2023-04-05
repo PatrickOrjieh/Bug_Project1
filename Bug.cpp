@@ -96,11 +96,11 @@ void Bug::addPath(const std::pair<int, int>& position) {
 //    std::string getPredator() const;
 //
 //    void setEatenBy(std::string predator);
-std::string Bug::getPredator() const {
+int Bug::getPredator() const {
     return predator;
 }
 
-void Bug::setEatenBy(const std::string& p) {
+void Bug::setEatenBy(const int& p) {
     Bug::predator = p;
 }
 //Checks if a bug is against an edge of the board AND if it is

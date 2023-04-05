@@ -17,6 +17,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <thread>
 
 using namespace std;
 
@@ -144,9 +145,9 @@ void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int s
 //}
 
 //check if the board is empty
-bool Board::isBoardEmpty() const {
-    return cells->empty();
-}
+//bool Board::isBoardEmpty() const {
+//    return cells->empty();
+//}
 
 //to display all bugs
 //void Board::displayAllBugs() const {
@@ -231,35 +232,87 @@ void Board::findBugById() const {
 //    }
 //}
 
+//void Board::tapBoard() {
+//    for (int i = 0; i < 100; i++) {
+//        //so for each cell, we iterate through the vector of bugs and call the move method for each bug
+//        for (auto it = cells[i].rbegin(); it != cells[i].rend(); ++it) {
+//            (*it)->move();
+//        }
+//
+//        //so after all bugs have moved, we check if there are any bugs in the same cell
+//        //and if tthey are they fight/eat
+//        //Implement functionality that will cause bugs that land on the same cell to fight. This will happen
+//        //after a round of moves has taken place – invoked by menu option 4. ( Tap ….). The biggest bug in
+//        //the cell will eat all other bugs, and will grow by the sum of the sizes of the bugs it eats. The eaten
+//        //bugs will be marked as dead (‘alive=false’). We can keep ‘tapping’ the bug board until all the bugs
+//        //are dead except one – the Last Bug Standing. Two or more bugs equal in size won’t be able to
+//        //overcome each other so the winner is resolved at random.
+//        //afte movement call teh fight method
+//    }
+//    fight();
+//}
+
 void Board::tapBoard() {
+    //make a copy of cells into another like this     std::vector <Bug*> cells[100];
+    vector<Bug *> cellsCopy[100];
+    vector<Bug *> deadCells[100];
+    // Iterate through all cells and move bugs in each cell
+    for (vector<Bug *> cell: cells) {
+        for (Bug *bug: cell) {
+            //only the bugs that are alive move
+            if (bug->isAlive()) {
+                bug->move();
+                cellsCopy[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
+            }else{
+                deadCells[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
+            }
+        }
+    }
+
     for (int i = 0; i < 100; i++) {
-        for (Bug *bug: cells[i]) {
-            bug->move();
-        }
-        //Implement functionality that will cause bugs that land on the same cell to fight. This will happen
-        //after a round of moves has taken place – invoked by menu option 4. ( Tap ….). The biggest bug in
-        //the cell will eat all other bugs, and will grow by the sum of the sizes of the bugs it eats. The eaten
-        //bugs will be marked as dead (‘alive=false’). We can keep ‘tapping’ the bug board until all the bugs
-        //are dead except one – the Last Bug Standing. Two or more bugs equal in size won’t be able to
-        //overcome each other so the winner is resolved at random.
-        //also check if the bugs are of the same size and if so
-        //select one at random to eat the other
-        if (cells[i].size() > 1) {
-            int max = 0;
-            int maxIndex = 0;
-            for (int j = 0; j < cells[i].size(); j++) {
-                if (cells[i][j]->getSize() > max) {
-                    max = cells[i][j]->getSize();
-                    maxIndex = j;
+        cells[i].clear(); // Clear the old contents of the cell
+        std::copy(cellsCopy[i].begin(), cellsCopy[i].end(), std::back_inserter(cells[i]));
+    }
+
+    //display the cells
+//    for (int i = 0; i < 100; i++) {
+//        std::cout << i << ": ";
+//        for (auto it = cells[i].rbegin(); it != cells[i].rend(); ++it) {
+//            std::cout << (*it)->getId() << " ";
+//        }
+//        std::cout << std::endl;
+//    }
+
+    //after movement call teh fight method
+    for (vector<Bug *> cell: cells) {
+        //first check if there are more than 1 bugs in the cell
+        if (cell.size() > 1) {
+            //if there are more than 1 bugs in the cell, then we need to find the biggest bug
+            //and make it eat all the other bugs
+
+            //find the biggest bug
+            Bug *biggestBug = cell[0];
+            for (Bug *bug: cell) {
+                if (bug->getSize() > biggestBug->getSize()) {
+                    biggestBug = bug;
                 }
             }
-            for (int j = 0; j < cells[i].size(); j++) {
-                if (j != maxIndex) {
-                    cells[i][maxIndex]->setSize(cells[i][maxIndex]->getSize() + cells[i][j]->getSize());
-                    cells[i][j]->setAlive(false);
+
+            //make the biggest bug eat all the other bugs
+            for (Bug *bug: cell) {
+                if (bug != biggestBug) {
+                    bug->setAlive(false);
+                    bug->setEatenBy(biggestBug->getId());
+                    cout << bug->getId() << " eaten by " << biggestBug->getId() << endl;
+                    biggestBug->setSize(biggestBug->getSize() + bug->getSize());
                 }
             }
         }
+    }
+
+    //after the figth add tne deadcells to the cells
+    for (int i = 0; i < 100; i++) {
+        std::copy(deadCells[i].begin(), deadCells[i].end(), std::back_inserter(cells[i]));
     }
 }
 
@@ -303,11 +356,14 @@ void Board::displayLifeHistoryOfAllBugs(std::ostream &out) const {
                     out << ",";
                 }
             }
+            // If the bug is dead, print the bug it was eaten by
+            if (!bug->isAlive()) {
+                out << " Eaten by " << bug->getPredator();
+            }
             out << std::endl;
         }
     }
 }
-
 
 
 //6. Exit - Write the life history of all bugs to a text file called “bugs_life_history_date_time.out”
@@ -342,44 +398,75 @@ void Board::writeLifeHistoryOfAllBugsToFile() const {
     file.close();
 }
 
-//7. Display all Cells
-//Display all cells in sequence, and the name and id of all bugs currently occupying each cell.
-//(0,0): empty // meaning: cell (0,0) is empty
-//(0,1): empty
-//(0,2): Crawler 101, Crawler 103 // i.e. the 2 Crawler bugs in this cell
-//(etc…)
-//(1,0): Hopper 102
-//(1,1): Crawler 105, Hopper 107, Crawler 109
-//void displayAllCells() const;
 void Board::displayAllCells() const {
-    //starting from (0,0) till (9,9)
-    for(int i = 0; i < BOARD_SIZE; i++){
-        for(int j = 0; j < BOARD_SIZE; j++){
-            int check = j * BOARD_SIZE + i;
+    // Loop through all possible positions on the board
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
             std::cout << "(" << i << "," << j << "): ";
-            if(cells[check].empty()){
-                std::cout << "empty" << std::endl;
-            } else {
-                for (Bug *bug: cells[check]) {
-                    if (dynamic_cast<Crawler *>(bug)) {
-                        std::cout << "Crawler " << bug->getId() << " ";
-                    } else if (dynamic_cast<Hopper *>(bug)) {
-                        std::cout << "Hopper " << bug->getId() << " ";
+            bool empty = true;
+            // Loop through all bugs on the board to check if any are in this position
+            for (const auto &cell: cells) {
+                for (Bug *bug: cell) {
+                    if (bug->getPosition() == std::make_pair(i, j) && bug->isAlive()) {
+                        empty = false;
+                        if (dynamic_cast<Crawler *>(bug)) {
+                            std::cout << "Crawler " << bug->getId() << " ";
+                        } else if (dynamic_cast<Hopper *>(bug)) {
+                            std::cout << "Hopper " << bug->getId() << " ";
+                        }
                     }
                 }
+            }
+            if (empty) {
+                std::cout << "empty" << std::endl;
+            } else {
                 std::cout << std::endl;
             }
         }
     }
 }
 
-//destructor
-//Board::~Board() {
-//    //delete the bugs
-//    for (auto & i : bug_vector) {
-//        delete i;
-//    }
-//}
+//Implement functionality to simulate the tapping of a board every 1 second from the tapBoard method
+// until there is only one bug left in the cells and write Bug xxx is the survivor to the screen.
+//Display progress on screen as simulation proceeds and write results to file.
+void Board::simulate() {
+    int numBugs = countAliveBugs();
+    int round = 1;
+    while (numBugs > 1) {
+        cout << "Round " << round << ":" << endl;
+        tapBoard();
+        displayAllBugs();
+        numBugs = countAliveBugs();
+        round++;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    cout << "Bug " << findLastAliveBug()->getId() << " is the survivor." << endl;
+    writeLifeHistoryOfAllBugsToFile();
+}
+
+int Board::countAliveBugs() const {
+    int count = 0;
+    for (int i = 0; i < 100; i++) {
+        for (Bug *bug: cells[i]) {
+            if (bug->isAlive()) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+Bug* Board::findLastAliveBug() const {
+    for (int i = 0; i < 100; i++) {
+        for (Bug *bug: cells[i]) {
+            if (bug->isAlive()) {
+                return bug;
+            }
+        }
+    }
+    return nullptr;
+}
+
 
 //destructors
 Board::~Board() {
