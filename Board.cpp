@@ -236,6 +236,30 @@ void Board::tapBoard() {
         for (Bug *bug: cells[i]) {
             bug->move();
         }
+        //Implement functionality that will cause bugs that land on the same cell to fight. This will happen
+        //after a round of moves has taken place – invoked by menu option 4. ( Tap ….). The biggest bug in
+        //the cell will eat all other bugs, and will grow by the sum of the sizes of the bugs it eats. The eaten
+        //bugs will be marked as dead (‘alive=false’). We can keep ‘tapping’ the bug board until all the bugs
+        //are dead except one – the Last Bug Standing. Two or more bugs equal in size won’t be able to
+        //overcome each other so the winner is resolved at random.
+        //also check if the bugs are of the same size and if so
+        //select one at random to eat the other
+        if (cells[i].size() > 1) {
+            int max = 0;
+            int maxIndex = 0;
+            for (int j = 0; j < cells[i].size(); j++) {
+                if (cells[i][j]->getSize() > max) {
+                    max = cells[i][j]->getSize();
+                    maxIndex = j;
+                }
+            }
+            for (int j = 0; j < cells[i].size(); j++) {
+                if (j != maxIndex) {
+                    cells[i][maxIndex]->setSize(cells[i][maxIndex]->getSize() + cells[i][j]->getSize());
+                    cells[i][j]->setAlive(false);
+                }
+            }
+        }
     }
 }
 
@@ -360,7 +384,7 @@ void Board::displayAllCells() const {
 //destructors
 Board::~Board() {
     //    std::vector <Bug*> cells[99];
-    for (int i = 0; i < 99; i++) {
+    for (int i = 0; i < 100; i++) {
         //using an iterator to delete the bugs
         for (std::vector<Bug *>::iterator it = cells[i].begin(); it != cells[i].end(); ++it) {
             delete *it;
