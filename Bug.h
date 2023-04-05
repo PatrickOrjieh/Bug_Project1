@@ -37,6 +37,9 @@ protected:
     //for the direction of the bug
     Direction direction;
 
+    //will keep a variable called predator to know the bug that ate the others
+    std::string predator;
+
 public:
     //default constructor
     Bug();
@@ -69,7 +72,12 @@ public:
 
     void setPath(const std::list<std::pair<int, int>>& path);
 
-    void addPath(std::pair<int, int> position);
+    void addPath(const std::pair<int, int>& position);
+
+    //to get and set the eaten by
+    std::string getPredator() const;
+
+    void setEatenBy(const std::string& predator);
 
     //methods
     //All derived classes must implement logic to move a bug

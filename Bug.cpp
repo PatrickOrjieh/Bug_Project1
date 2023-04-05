@@ -88,10 +88,21 @@ void Bug::setPath(const std::list<std::pair<int, int>>& p) {
 }
 
 //to add a position to the path
-void Bug::addPath(std::pair<int, int> position) {
+void Bug::addPath(const std::pair<int, int>& position) {
     path.push_back(position);
 }
 
+// //to get and set the eaten by
+//    std::string getPredator() const;
+//
+//    void setEatenBy(std::string predator);
+std::string Bug::getPredator() const {
+    return predator;
+}
+
+void Bug::setEatenBy(const std::string& p) {
+    Bug::predator = p;
+}
 //Checks if a bug is against an edge of the board AND if it is
 //facing in the direction of that edge. If so, its way is blocked.
 //[Used by the move() function], board is siz2 10x10
