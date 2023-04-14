@@ -13,7 +13,9 @@ Crawler::Crawler() : Bug() {
 }
 
 //make up different constructors with different parameters
-Crawler::Crawler(int id, std::pair<int, int> position, Direction direction, int size, bool alive) : Bug(id, position, direction, size, alive) {
+Crawler::Crawler(int id, std::pair<int, int> position, Direction direction, int size, bool alive) : Bug(id, position,
+                                                                                                        direction, size,
+                                                                                                        alive) {
 
 }
 
@@ -24,6 +26,12 @@ Crawler::Crawler(int id, std::pair<int, int> position, Direction direction, int 
 //until bug can move forward). - record new position in the crawler's path history
 //note that board size is 10x10
 void Crawler::move() {
+    // if the bug is at the edge of the board and can't move in the current direction, set a new direction at random
+    while (isWayBlocked()) {
+        int newDirection = rand() % 4 + 1;
+        setDirection((Direction) newDirection);
+    }
+
     //get the current position of the bug
     std::pair<int, int> currentPosition = getPosition();
     //get the current direction of the bug
@@ -31,42 +39,33 @@ void Crawler::move() {
     //get the current path of the bug
     std::list<std::pair<int, int>> currentPath = getPath();
 
-    //if the bug is not at the edge of the board
-    if (!isWayBlocked()) {
-        //move the bug by 1 unit in the direction it is currently facing
-        switch (currentDirection) {
-            case North:
-                currentPosition.second -= 1;
-                break;
-            case South:
-                currentPosition.second += 1;
-                break;
-            case East:
-                currentPosition.first += 1;
-                break;
-            case West:
-                currentPosition.first -= 1;
-                break;
-        }
-        //set the new position of the bug
-        setPosition(currentPosition);
-        //add the new position to the path of the bug
-        addPath(currentPosition);
-    } else {
-        //if the bug is at the edge of the board
-        //set a new direction at random
-        int newDirection = rand() % 4 + 1;
-        setDirection((Direction) newDirection);
-        //repeat until the bug can move forward
-        move();
+    //move the bug by 1 unit in the direction it is currently facing
+    switch (currentDirection) {
+        case North:
+            currentPosition.second -= 1;
+            break;
+        case South:
+            currentPosition.second += 1;
+            break;
+        case East:
+            currentPosition.first += 1;
+            break;
+        case West:
+            currentPosition.first -= 1;
+            break;
     }
+    //set the new position of the bug
+    setPosition(currentPosition);
+    //add the new position to the path of the bug
+    addPath(currentPosition);
 }
 
 //method to display the bug in a good way with all its attributes
 //like this 101 Crawler (3,4) 18 East Dead
 //dhow twh action direction no tjust the number
 void Crawler::displayBug() {
-    std::cout << getId() << " Crawler (" << getPosition().first << "," << getPosition().second << ") " << getSize() << " ";
+    std::cout << getId() << " Crawler (" << getPosition().first << "," << getPosition().second << ") " << getSize()
+              << " ";
     switch (getDirection()) {
         case North:
             std::cout << "North ";

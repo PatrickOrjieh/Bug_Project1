@@ -79,9 +79,6 @@ void Hopper::move() {
                 currentPosition.first -= hopLength;
                 break;
         }
-        setPosition(currentPosition);
-        currentPath.push_back(currentPosition);
-        addPath(currentPosition);
     }
         // if the bug can't hop the full distance, it hits the edge and falls on that square
     else {
@@ -99,10 +96,10 @@ void Hopper::move() {
                 currentPosition.first = 0;
                 break;
         }
-        setPosition(currentPosition);
-        currentPath.push_back(currentPosition);
-        addPath(currentPosition);
     }
+    setPosition(currentPosition);
+    currentPath.push_back(currentPosition);
+    addPath(currentPosition);
 }
 
 //display the bug's information

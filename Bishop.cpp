@@ -10,7 +10,11 @@ Bishop::Bishop() {
 }
 
 //make up different constructors with all the parameters set the hop length to a random number between 2 and 4
-Bishop::Bishop(int id, std::pair<int, int> position, Direction direction, int size, bool alive, int bisLength) : Bug(id, position, direction, size, alive) {
+Bishop::Bishop(int id, std::pair<int, int> position, Direction direction, int size, bool alive, int bisLength) : Bug(id,
+                                                                                                                     position,
+                                                                                                                     direction,
+                                                                                                                     size,
+                                                                                                                     alive) {
     this->bisLength = bisLength;
 }
 
@@ -36,7 +40,12 @@ void Bishop::setBisLength(int b) {
 //square where it hit the edge/wall
 //- record new position in bishops path history
 //note that the bishop can only move diagonally
-void Bishop::move(){
+/* This function implements the movement of a bishop on a chessboard. The bishop moves
+ * diagonally on the board, and if it is blocked in its current direction, it randomly
+ * sets a new direction to move. The maximum distance the bishop can hop in the current
+ * direction is calculated and then the bishop moves the full distance if possible, or to
+ * the edge of the board if not. This implementation is based on the rules of movement for a bishop in chess. */
+void Bishop::move() {
     //if the bug is at the edge of the board and can't move in the current direction, set a new direction at random
     while (isWayBlocked()) {
         int newDirection = rand() % 4 + 5;
@@ -86,9 +95,6 @@ void Bishop::move(){
                 currentPosition.second -= bisLength;
                 break;
         }
-        setPosition(currentPosition);
-        currentPath.push_back(currentPosition);
-        setPath(currentPath);
     } else {
         // if the bug can't hop the full distance, move it to the edge and update its position
         switch (currentDirection) {
@@ -109,16 +115,17 @@ void Bishop::move(){
                 currentPosition.second -= maxHopDistance;
                 break;
         }
-        setPosition(currentPosition);
-        currentPath.push_back(currentPosition);
-        setPath(currentPath);
     }
+    setPosition(currentPosition);
+    currentPath.push_back(currentPosition);
+    setPath(currentPath);
 }
 
 //display the bug's information
 //102 Bishop (5,8) 13 NorthEast 4 Alive
 void Bishop::displayBug() {
-    std::cout << getId() << " Bishop (" << getPosition().first << "," << getPosition().second << ") " << getSize() << " ";
+    std::cout << getId() << " Bishop (" << getPosition().first << "," << getPosition().second << ") " << getSize()
+              << " ";
     switch (getDirection()) {
         case NorthEast:
             std::cout << "NorthEast ";

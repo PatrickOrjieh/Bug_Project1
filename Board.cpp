@@ -37,13 +37,16 @@ Board::Board() {
 //size = int and if the bug is a hopper then the hop distance is also included and as the data is read checks that
 //the position is valid and that the bug is not already in that position. for all parts do proper error handling and error checking
 //new bug type is bishop and it moves in a diagonal direction and direction is 5/6/7/8 and the bishop can only move 1 -6 cells
+// This function initializes the board by reading bug data from a file and creating bugs on the board. The file name is passed as an argument to the function.
 void Board::initialiseBoard(const std::string &filename) {
     std::ifstream file(filename);
+    //The function first opens the file and checks if it is open.
+    // If it is not open, an error message is displayed and the function returns
     if (!file.is_open()) {
         std::cout << "Error: File not found" << std::endl;
         return;
     }
-
+    //The function then reads each line from the file and extracts the bug data from each line using a stringstream.
     std::string line;
     while (std::getline(file, line)) {
         std::stringstream lineStream(line);
@@ -62,6 +65,8 @@ void Board::initialiseBoard(const std::string &filename) {
             std::getline(lineStream, bishopLengthStr, ';');
         }
 
+        //The function checks if the bug data is valid using the helper function isValidBugData.
+        // If the bug data is invalid, an error message is displayed and the function moves on to the next line.
         int numOfInvalid = 1;
         if (!isValidBugData(bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr, bishopLengthStr)){
             std::cout << "Error: Invalid bug data -" << numOfInvalid << std::endl;
@@ -69,6 +74,9 @@ void Board::initialiseBoard(const std::string &filename) {
             continue;
         }
 
+        //f the bug data is valid, the function converts the string values to integers using std::stoi
+        // and creates a new bug of the appropriate type using
+        // the helper functions createCrawlerBug, createHopperBug, and createBishopBug
         int bugId = std::stoi(bugIdStr);
         int bugX = std::stoi(bugXStr);
         int bugY = std::stoi(bugYStr);
@@ -100,30 +108,51 @@ bool Board::isValidBugData(const std::string &bugType, const std::string &bugIdS
     int direction = stoi(directionStr);
     int size = stoi(sizeStr);
 
+    //The function checks if the bug type is "C" (CrawlerBug), "H" (HopperBug), or "B" (BishopBug).
+    // If the bug type is not one of these three values, the function returns false.
     if (bugType != "C" && bugType != "H" && bugType != "B") {
         return false;
     }
+
+    //The function checks if the bug ID is a positive integer.
+    // If the bug ID is not positive, the function returns false
     if (bugId <= 0) {
         return false;
     }
+
+    //The function checks if the bug's x-coordinate and y-coordinate are within the bounds of the board
+    // (0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE). If either coordinate is out of bounds,
+    // the function returns false.
     if (bugX < 0 || bugX >= BOARD_SIZE) {
         return false;
     }
     if (bugY < 0 || bugY >= BOARD_SIZE) {
         return false;
     }
+
+    //The function checks if the direction is an integer between 1 and 8 (inclusive).
+    // If the direction is not within this range, the function returns false.
     if (direction < 1 || direction > 8) {
         return false;
     }
+
+    //The function checks if the size of the bug is a positive integer.
+    // If the size is not positive, the function returns false.
     if (size <= 0) {
         return false;
     }
+
+    //If the bug type is "H" (HopperBug), the function checks if the hop length is a positive integer.
+    // If the hop length is not positive, the function returns false.
     if (bugType == "H") {
         int hopLength = stoi(hopLengthStr);
         if (hopLength <= 0) {
             return false;
         }
     }
+
+    //If the bug type is "B" (BishopBug), the function checks if the bishop length is a positive integer between 1 and 6 (inclusive).
+    // f the bishop length is not within this range, the function returns false.
     if (bugType == "B") {
         int bishopLength = stoi(bishopLengthStr);
         if (bishopLength <= 0 || bishopLength > 6) {
