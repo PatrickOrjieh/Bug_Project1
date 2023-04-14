@@ -123,6 +123,18 @@ bool Bug::isWayBlocked() {
         case Direction::West:
             wayBlocked = (position.first == 0);
             break;
+        case Direction::NorthEast:
+            wayBlocked = (position.first == (BOARD_SIZE - 1) || position.second == 0);
+            break;
+        case Direction::SouthEast:
+            wayBlocked = (position.first == (BOARD_SIZE - 1) || position.second == (BOARD_SIZE - 1));
+            break;
+        case Direction::SouthWest:
+            wayBlocked = (position.first == 0 || position.second == (BOARD_SIZE - 1));
+            break;
+        case Direction::NorthWest:
+            wayBlocked = (position.first == 0 || position.second == 0);
+            break;
         default:
             // handle invalid direction
             break;
