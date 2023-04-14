@@ -45,13 +45,16 @@ public:
     void initialiseBoard(const std::string& filename);
 
     //bool Board::isValidBugData(const std::string& bugType, const std::string& bugIdStr, const std::string& bugXStr, const std::string& bugYStr, const std::string& directionStr, const std::string& sizeStr, const std::string& hopLengthStr) const {
-    bool isValidBugData(const std::string& bugType, const std::string& bugIdStr, const std::string& bugXStr, const std::string& bugYStr, const std::string& directionStr, const std::string& sizeStr, const std::string& hopLengthStr) const;
+    bool isValidBugData(const std::string& bugType, const std::string& bugIdStr, const std::string& bugXStr, const std::string& bugYStr, const std::string& directionStr, const std::string& sizeStr, const std::string& hopLengthStr, const std::string& bishopLengthStr) const;
 
     //void Board::createHopperBug(int bugId, int bugX, int bugY, int direction, int size, int hopLength) {
     void createHopperBug(int bugId, int bugX, int bugY, int direction, int size, int hopLength);
 
     //void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size) {
     void createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size);
+
+    //void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int size, int bisLength) {
+    void createBishopBug(int bugId, int bugX, int bugY, int direction, int size, int bisLength);
 
     //display all bugs
     void displayAllBugs() const;

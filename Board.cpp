@@ -5,6 +5,7 @@
 #include "Board.h"
 #include "Hopper.h"
 #include "Crawler.h"
+#include "Bishop.h"
 #include "Bug.h"
 #include "Direction.h"
 #include "Utils.h"
@@ -35,6 +36,7 @@ Board::Board() {
 //the data is in the following format:bug_type = char, bug_id = int, bug_x = int, bug_y = int, direction = 1/2/3/4,
 //size = int and if the bug is a hopper then the hop distance is also included and as the data is read checks that
 //the position is valid and that the bug is not already in that position. for all parts do proper error handling and error checking
+//new bug type is bishop and it moves in a diagonal direction and direction is 5/6/7/8 and the bishop can only move 1 -6 cells
 void Board::initialiseBoard(const std::string &filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -46,7 +48,7 @@ void Board::initialiseBoard(const std::string &filename) {
     while (std::getline(file, line)) {
         std::stringstream lineStream(line);
         std::vector<std::string> lineData;
-        std::string bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr;
+        std::string bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr, bishopLengthStr;
         std::getline(lineStream, bugType, ';');
         std::getline(lineStream, bugIdStr, ';');
         std::getline(lineStream, bugXStr, ';');
@@ -56,9 +58,14 @@ void Board::initialiseBoard(const std::string &filename) {
         if (bugType == "H") {
             std::getline(lineStream, hopLengthStr, ';');
         }
+        if (bugType == "B") {
+            std::getline(lineStream, bishopLengthStr, ';');
+        }
 
-        if (!isValidBugData(bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr)) {
-            std::cout << "Error: Invalid bug data" << std::endl;
+        int numOfInvalid = 1;
+        if (!isValidBugData(bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr, bishopLengthStr)){
+            std::cout << "Error: Invalid bug data -" << numOfInvalid << std::endl;
+            numOfInvalid++;
             continue;
         }
 
@@ -68,7 +75,12 @@ void Board::initialiseBoard(const std::string &filename) {
         int direction = std::stoi(directionStr);
         int size = std::stoi(sizeStr);
         int hopLength = 0;
-        if (bugType == "H") {
+        int bishopLength = 0;
+        if(bugType == "B"){
+            bishopLength = std::stoi(bishopLengthStr);
+            createBishopBug(bugId, bugX, bugY, direction, size, bishopLength);
+        }
+        else if (bugType == "H") {
             hopLength = std::stoi(hopLengthStr);
             createHopperBug(bugId, bugX, bugY, direction, size, hopLength);
         } else {
@@ -81,14 +93,14 @@ void Board::initialiseBoard(const std::string &filename) {
 //method to check if the bug data is valid
 bool Board::isValidBugData(const std::string &bugType, const std::string &bugIdStr, const std::string &bugXStr,
                            const std::string &bugYStr, const std::string &directionStr, const std::string &sizeStr,
-                           const std::string &hopLengthStr) const {
+                           const std::string &hopLengthStr, const std::string &bishopLengthStr) const {
     int bugId = stoi(bugIdStr);
     int bugX = stoi(bugXStr);
     int bugY = stoi(bugYStr);
     int direction = stoi(directionStr);
     int size = stoi(sizeStr);
 
-    if (bugType != "C" && bugType != "H") {
+    if (bugType != "C" && bugType != "H" && bugType != "B") {
         return false;
     }
     if (bugId <= 0) {
@@ -100,7 +112,7 @@ bool Board::isValidBugData(const std::string &bugType, const std::string &bugIdS
     if (bugY < 0 || bugY >= BOARD_SIZE) {
         return false;
     }
-    if (direction < 1 || direction > 4) {
+    if (direction < 1 || direction > 8) {
         return false;
     }
     if (size <= 0) {
@@ -109,6 +121,12 @@ bool Board::isValidBugData(const std::string &bugType, const std::string &bugIdS
     if (bugType == "H") {
         int hopLength = stoi(hopLengthStr);
         if (hopLength <= 0) {
+            return false;
+        }
+    }
+    if (bugType == "B") {
+        int bishopLength = stoi(bishopLengthStr);
+        if (bishopLength <= 0 || bishopLength > 6) {
             return false;
         }
     }
@@ -137,6 +155,18 @@ void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int s
     //using the formula for the cells
     int position = (bugY * BOARD_SIZE) + bugX;
     cells[position].push_back(crawler);
+}
+
+//method to create a bishop bug
+void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int size, int bishopLength) {
+    //    Bishop(int id, std::pair<int, int> position, Direction direction, int size, bool alive, int bishopLength);
+    Bishop *bishop = new Bishop(bugId, std::make_pair(bugX, bugY), static_cast<Direction>(direction), size, true,
+                                bishopLength);
+    //add the first position to the path
+    bishop->addPath(std::make_pair(bugX, bugY));
+    //using the formula for the cells
+    int position = (bugY * BOARD_SIZE) + bugX;
+    cells[position].push_back(bishop);
 }
 
 //check if the bugs are empty
@@ -349,6 +379,9 @@ void Board::displayLifeHistoryOfAllBugs(std::ostream &out) const {
             } else if (dynamic_cast<Hopper *>(bug)) {
                 out << "Hopper";
             }
+            else if (dynamic_cast<Bishop *>(bug)) {
+                out << "Bishop";
+            }
             out << " Path: ";
             for (auto const &pos: bug->getPath()) {
                 out << "(" << pos.first << "," << pos.second << ")";
@@ -413,6 +446,9 @@ void Board::displayAllCells() const {
                             std::cout << "Crawler " << bug->getId() << " ";
                         } else if (dynamic_cast<Hopper *>(bug)) {
                             std::cout << "Hopper " << bug->getId() << " ";
+                        }
+                        else if (dynamic_cast<Bishop *>(bug)) {
+                            std::cout << "Bishop " << bug->getId() << " ";
                         }
                     }
                 }
