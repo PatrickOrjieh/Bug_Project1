@@ -36,6 +36,7 @@ class Board {
 
     //initializing the board to be a vector of bug cells
     std::vector <Bug*> cells[100];
+    std::vector <Bug*> bugs;
 
 public:
     //default constructor

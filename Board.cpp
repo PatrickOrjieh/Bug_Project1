@@ -173,6 +173,7 @@ void Board::createHopperBug(int bugId, int bugX, int bugY, int direction, int si
     //using the formula for the cells
     int position = (bugY * BOARD_SIZE) + bugX;
     cells[position].push_back(hopper);
+    bugs.push_back(hopper);
 }
 
 //method to create a crawler bug
@@ -184,6 +185,7 @@ void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int s
     //using the formula for the cells
     int position = (bugY * BOARD_SIZE) + bugX;
     cells[position].push_back(crawler);
+    bugs.push_back(crawler);
 }
 
 //method to create a bishop bug
@@ -196,6 +198,7 @@ void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int si
     //using the formula for the cells
     int position = (bugY * BOARD_SIZE) + bugX;
     cells[position].push_back(bishop);
+    bugs.push_back(bishop);
 }
 
 //check if the bugs are empty
@@ -313,25 +316,34 @@ void Board::findBugById() const {
 
 void Board::tapBoard() {
     //make a copy of cells into another like this     std::vector <Bug*> cells[100];
-    vector<Bug *> cellsCopy[100];
-    vector<Bug *> deadCells[100];
+//    vector<Bug *> cellsCopy[100];
+//    vector<Bug *> deadCells[100];
     // Iterate through all cells and move bugs in each cell
-    for (vector<Bug *> cell: cells) {
-        for (Bug *bug: cell) {
+//    for (vector<Bug *> cell: cells) {
+        for (Bug *bug: bugs) {
             //only the bugs that are alive move
             if (bug->isAlive()) {
+                int oldPosition = bug->getPosition().second * BOARD_SIZE + bug->getPosition().first;
                 bug->move();
-                cellsCopy[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
-            }else{
-                deadCells[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
+                for(vector<Bug*>::iterator iter = cells[oldPosition].begin(); iter != cells[oldPosition].end(); ++iter) {
+                    if (*iter == bug) {
+                        cells[oldPosition].erase(iter);
+                        break;
+                    }
+                }
+                cells[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
+//                cellsCopy[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
             }
+//            else{
+//                deadCells[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
+//            }
         }
-    }
+//    }
 
-    for (int i = 0; i < 100; i++) {
-        cells[i].clear(); // Clear the old contents of the cell
-        std::copy(cellsCopy[i].begin(), cellsCopy[i].end(), std::back_inserter(cells[i]));
-    }
+//    for (int i = 0; i < 100; i++) {
+//        cells[i].clear(); // Clear the old contents of the cell
+//        std::copy(cellsCopy[i].begin(), cellsCopy[i].end(), std::back_inserter(cells[i]));
+//    }
 
     //display the cells
 //    for (int i = 0; i < 100; i++) {
@@ -370,9 +382,9 @@ void Board::tapBoard() {
     }
 
     //after the figth add tne deadcells to the cells
-    for (int i = 0; i < 100; i++) {
-        std::copy(deadCells[i].begin(), deadCells[i].end(), std::back_inserter(cells[i]));
-    }
+//    for (int i = 0; i < 100; i++) {
+//        std::copy(deadCells[i].begin(), deadCells[i].end(), std::back_inserter(cells[i]));
+//    }
 }
 
 //5. Display Life History of all bugs
