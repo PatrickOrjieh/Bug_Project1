@@ -19,6 +19,7 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include <SFML/Graphics.hpp>
 
 using namespace std;
 
@@ -68,7 +69,8 @@ void Board::initialiseBoard(const std::string &filename) {
         //The function checks if the bug data is valid using the helper function isValidBugData.
         // If the bug data is invalid, an error message is displayed and the function moves on to the next line.
         int numOfInvalid = 1;
-        if (!isValidBugData(bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr, bishopLengthStr)){
+        if (!isValidBugData(bugType, bugIdStr, bugXStr, bugYStr, directionStr, sizeStr, hopLengthStr,
+                            bishopLengthStr)) {
             std::cout << "Error: Invalid bug data -" << numOfInvalid << std::endl;
             numOfInvalid++;
             continue;
@@ -84,11 +86,10 @@ void Board::initialiseBoard(const std::string &filename) {
         int size = std::stoi(sizeStr);
         int hopLength = 0;
         int bishopLength = 0;
-        if(bugType == "B"){
+        if (bugType == "B") {
             bishopLength = std::stoi(bishopLengthStr);
             createBishopBug(bugId, bugX, bugY, direction, size, bishopLength);
-        }
-        else if (bugType == "H") {
+        } else if (bugType == "H") {
             hopLength = std::stoi(hopLengthStr);
             createHopperBug(bugId, bugX, bugY, direction, size, hopLength);
         } else {
@@ -315,77 +316,44 @@ void Board::findBugById() const {
 //}
 
 void Board::tapBoard() {
-    //make a copy of cells into another like this     std::vector <Bug*> cells[100];
-//    vector<Bug *> cellsCopy[100];
-//    vector<Bug *> deadCells[100];
-    // Iterate through all cells and move bugs in each cell
-//    for (vector<Bug *> cell: cells) {
-        for (Bug *bug: bugs) {
-            //only the bugs that are alive move
-            if (bug->isAlive()) {
-                int oldPosition = bug->getPosition().second * BOARD_SIZE + bug->getPosition().first;
-                bug->move();
-                for(vector<Bug*>::iterator iter = cells[oldPosition].begin(); iter != cells[oldPosition].end(); ++iter) {
-                    if (*iter == bug) {
-                        cells[oldPosition].erase(iter);
-                        break;
+    for (Bug *bug: bugs) {
+        if (bug->isAlive()) {
+            int oldPosition = bug->getPosition().second * BOARD_SIZE + bug->getPosition().first;
+            bug->move();
+            for (vector<Bug *>::iterator iter = cells[oldPosition].begin(); iter != cells[oldPosition].end(); ++iter) {
+                if (*iter == bug) {
+                    cells[oldPosition].erase(iter);
+                    break;
+                }
+            }
+            cells[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
+        }
+    }
+
+    for (vector<Bug *> cell: cells) {
+        if (cell.size() > 1) {
+            Bug *biggestBug = NULL;
+            for (Bug *bug: cell) {
+                if (bug->isAlive()) {
+                    if (biggestBug == NULL || bug->getSize() > biggestBug->getSize()) {
+                        biggestBug = bug;
                     }
                 }
-                cells[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
-//                cellsCopy[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
             }
-//            else{
-//                deadCells[bug->getPosition().second * BOARD_SIZE + bug->getPosition().first].push_back(bug);
-//            }
-        }
-//    }
-
-//    for (int i = 0; i < 100; i++) {
-//        cells[i].clear(); // Clear the old contents of the cell
-//        std::copy(cellsCopy[i].begin(), cellsCopy[i].end(), std::back_inserter(cells[i]));
-//    }
-
-    //display the cells
-//    for (int i = 0; i < 100; i++) {
-//        std::cout << i << ": ";
-//        for (auto it = cells[i].rbegin(); it != cells[i].rend(); ++it) {
-//            std::cout << (*it)->getId() << " ";
-//        }
-//        std::cout << std::endl;
-//    }
-
-    //after movement call teh fight method
-    for (vector<Bug *> cell: cells) {
-        //first check if there are more than 1 bugs in the cell
-        if (cell.size() > 1) {
-            //if there are more than 1 bugs in the cell, then we need to find the biggest bug
-            //and make it eat all the other bugs
-
-            //find the biggest bug
-            Bug *biggestBug = cell[0];
-            for (Bug *bug: cell) {
-                if (bug->getSize() > biggestBug->getSize()) {
-                    biggestBug = bug;
-                }
-            }
-
-            //make the biggest bug eat all the other bugs
-            for (Bug *bug: cell) {
-                if (bug != biggestBug) {
-                    bug->setAlive(false);
-                    bug->setEatenBy(biggestBug->getId());
-                    cout << bug->getId() << " eaten by " << biggestBug->getId() << endl;
-                    biggestBug->setSize(biggestBug->getSize() + bug->getSize());
+            if (biggestBug != NULL) {
+                for (Bug *bug: cell) {
+                    if (bug->isAlive() && bug != biggestBug) {
+                        bug->setAlive(false);
+                        bug->setEatenBy(biggestBug->getId());
+                        cout << bug->getId() << " eaten by " << biggestBug->getId() << endl;
+                        biggestBug->setSize(biggestBug->getSize() + bug->getSize());
+                    }
                 }
             }
         }
     }
-
-    //after the figth add tne deadcells to the cells
-//    for (int i = 0; i < 100; i++) {
-//        std::copy(deadCells[i].begin(), deadCells[i].end(), std::back_inserter(cells[i]));
-//    }
 }
+
 
 //5. Display Life History of all bugs
 //Display each bug’s details and the path that it travelled from beginning to death. The history will be
@@ -419,8 +387,7 @@ void Board::displayLifeHistoryOfAllBugs(std::ostream &out) const {
                 out << "Crawler";
             } else if (dynamic_cast<Hopper *>(bug)) {
                 out << "Hopper";
-            }
-            else if (dynamic_cast<Bishop *>(bug)) {
+            } else if (dynamic_cast<Bishop *>(bug)) {
                 out << "Bishop";
             }
             out << " Path: ";
@@ -487,8 +454,7 @@ void Board::displayAllCells() const {
                             std::cout << "Crawler " << bug->getId() << " ";
                         } else if (dynamic_cast<Hopper *>(bug)) {
                             std::cout << "Hopper " << bug->getId() << " ";
-                        }
-                        else if (dynamic_cast<Bishop *>(bug)) {
+                        } else if (dynamic_cast<Bishop *>(bug)) {
                             std::cout << "Bishop " << bug->getId() << " ";
                         }
                     }
@@ -533,7 +499,7 @@ int Board::countAliveBugs() const {
     return count;
 }
 
-Bug* Board::findLastAliveBug() const {
+Bug *Board::findLastAliveBug() const {
     for (int i = 0; i < 100; i++) {
         for (Bug *bug: cells[i]) {
             if (bug->isAlive()) {
@@ -543,6 +509,145 @@ Bug* Board::findLastAliveBug() const {
     }
     return nullptr;
 }
+
+void Board::drawBoard() {
+    //create a window
+    sf::RenderWindow window(sf::VideoMode(1500, 1000), "Bug Game");
+
+    //create a chess board of size 10x10 using a 2D array of squares
+    sf::RectangleShape squares[10][10];
+
+    //set the size of each square
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            squares[i][j].setSize(sf::Vector2f(100, 100));
+            squares[i][j].setPosition(i * 100, j * 100);
+
+            //set the color of each square
+            if ((i + j) % 2 == 0) {
+                squares[i][j].setFillColor(sf::Color::Black);
+            } else {
+                squares[i][j].setFillColor(sf::Color::White);
+            }
+        }
+    }
+
+    //load the bug textures
+    sf::Texture crawlerTexture;
+    if (!crawlerTexture.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/crawler2.png")) {
+        std::cerr << "Failed to load crawler.png" << std::endl;
+        return;
+    }
+
+
+    sf::Texture hopperTexture;
+    if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/hopper2.png")) {
+        std::cerr << "Failed to load hopper.png" << std::endl;
+        return;
+    }
+
+    sf::Texture bishopTexture;
+    if (!bishopTexture.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/bishop2.png")) {
+        std::cerr << "Failed to load bishop.png" << std::endl;
+        return;
+    }
+
+    //create a bug sprite for each bug on the board
+    for (auto &bug: bugs) {
+        sf::Sprite sprite;
+        if (dynamic_cast<Crawler *>(bug)) {
+            sprite.setTexture(crawlerTexture);
+        } else if (dynamic_cast<Hopper *>(bug)) {
+            sprite.setTexture(hopperTexture);
+        } else{
+            sprite.setTexture(bishopTexture);
+        }
+
+        //set the position of the bug sprite on the board
+        sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
+
+        //draw the bug sprite on the board
+        window.draw(sprite);
+    }
+
+    // add a rectangle for menu options
+    sf::RectangleShape menu(sf::Vector2f(500, 1000));
+    menu.setPosition(1000, 0); // set the x-coordinate to 700
+    menu.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
+
+
+
+    // add event loop to handle user input
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+                // handle left mouse button press
+            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                tapBoard();
+                // check if there is only one bug left
+                if (countAliveBugs() == 1) {
+                    // get the last alive bug
+                    Bug* lastBug = findLastAliveBug();
+                    // display "game over" and the winner's ID
+                    sf::Font font;
+                    if (!font.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/arial.ttf")) {
+                        std::cerr << "Failed to load font" << std::endl;
+                        return;
+                    }
+                    window.clear();
+                    sf::Text text;
+                    text.setFont(font);
+                    text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
+                    text.setCharacterSize(50);
+                    text.setPosition(200, 200);
+                    text.setFillColor(sf::Color::Red);
+                    window.draw(text);
+                    window.display();
+
+                    // wait for 3 seconds before closing the window
+                    sf::sleep(sf::seconds(3));
+                    window.close();
+                }
+            }
+        }
+
+        window.clear();
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                window.draw(squares[i][j]);
+            }
+        }
+
+        window.draw(menu);
+
+        for (auto &bug: bugs) {
+            sf::Sprite sprite;
+            if(bug->isAlive()){
+                if (dynamic_cast<Crawler *>(bug)) {
+                    sprite.setTexture(crawlerTexture);
+                    sprite.setScale(0.2, 0.2);
+//                sprite.setColor(sf::Color(255, 255, 255, 128)); // alpha value of 128 (50% transparency)
+                } else if (dynamic_cast<Hopper *>(bug)) {
+                    sprite.setTexture(hopperTexture);
+                    sprite.setScale(0.2, 0.2);
+                } else {
+                    sprite.setTexture(bishopTexture);
+                    sprite.setScale(0.35, 0.35);
+                }
+            }
+
+            sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
+            window.draw(sprite);
+        }
+
+        window.display();
+    }
+}
+
 
 
 //destructors

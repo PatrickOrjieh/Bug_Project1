@@ -49,6 +49,9 @@ int main() {
                 board.simulate();
                 return 0;
                 break;
+            case 8:
+                board.drawBoard();
+                break;
             default:
                 cout << "Invalid choice, please enter a number between 1 and 6" << endl;
                 break;

@@ -89,6 +89,8 @@ public:
     //to simulate the fight
     void simulate();
 
+    void drawBoard();
+
     //5. Display Life History of all bugs
     //Display each bug’s details and the path that it travelled from beginning to death. The history will be
     //recorded in the path field (which is a chronological list of positions). (Type list must be used)
