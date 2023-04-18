@@ -510,6 +510,144 @@ Bug *Board::findLastAliveBug() const {
     return nullptr;
 }
 
+//void Board::drawBoard() {
+//    //create a window
+//    sf::RenderWindow window(sf::VideoMode(1500, 1000), "Bug Game");
+//
+//    //create a chess board of size 10x10 using a 2D array of squares
+//    sf::RectangleShape squares[10][10];
+//
+//    //set the size of each square
+//    for (int i = 0; i < 10; i++) {
+//        for (int j = 0; j < 10; j++) {
+//            squares[i][j].setSize(sf::Vector2f(100, 100));
+//            squares[i][j].setPosition(i * 100, j * 100);
+//
+//            //set the color of each square
+//            if ((i + j) % 2 == 0) {
+//                squares[i][j].setFillColor(sf::Color::Black);
+//            } else {
+//                squares[i][j].setFillColor(sf::Color::White);
+//            }
+//        }
+//    }
+//
+//    //load the bug textures
+//    sf::Texture crawlerTexture;
+//    if (!crawlerTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/crawler2.png")) {
+//        std::cerr << "Failed to load crawler.png" << std::endl;
+//        return;
+//    }
+//
+//
+//    sf::Texture hopperTexture;
+//    if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/hopper2.png")) {
+//        std::cerr << "Failed to load hopper.png" << std::endl;
+//        return;
+//    }
+//
+//    sf::Texture bishopTexture;
+//    if (!bishopTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/bishop2.png")) {
+//        std::cerr << "Failed to load bishop.png" << std::endl;
+//        return;
+//    }
+//
+//    //create a bug sprite for each bug on the board
+//    for (auto &bug: bugs) {
+//        sf::Sprite sprite;
+//        if (dynamic_cast<Crawler *>(bug)) {
+//            sprite.setTexture(crawlerTexture);
+//        } else if (dynamic_cast<Hopper *>(bug)) {
+//            sprite.setTexture(hopperTexture);
+//        } else{
+//            sprite.setTexture(bishopTexture);
+//        }
+//
+//        //set the position of the bug sprite on the board
+//        sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
+//
+//        //draw the bug sprite on the board
+//        window.draw(sprite);
+//    }
+//
+//    // add a rectangle for menu options
+//    sf::RectangleShape menu(sf::Vector2f(500, 1000));
+//    menu.setPosition(1000, 0); // set the x-coordinate to 700
+//    menu.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
+//
+//
+//
+//    // add event loop to handle user input
+//    while (window.isOpen()) {
+//        sf::Event event;
+//        while (window.pollEvent(event)) {
+//            if (event.type == sf::Event::Closed) {
+//                window.close();
+//            }
+//                // handle left mouse button press
+//            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+//                tapBoard();
+//                // check if there is only one bug left
+//                if (countAliveBugs() == 1) {
+//                    // get the last alive bug
+//                    Bug* lastBug = findLastAliveBug();
+//                    // display "game over" and the winner's ID
+//                    sf::Font font;
+//                    if (!font.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/arial.ttf")) {
+//                        std::cerr << "Failed to load font" << std::endl;
+//                        return;
+//                    }
+//                    window.clear();
+//                    sf::Text text;
+//                    text.setFont(font);
+//                    text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
+//                    text.setCharacterSize(50);
+//                    text.setPosition(200, 200);
+//                    text.setFillColor(sf::Color::Red);
+//                    window.draw(text);
+//                    window.display();
+//
+//                    // wait for 3 seconds before closing the window
+//                    sf::sleep(sf::seconds(3));
+//                    window.close();
+//                }
+//            }
+//        }
+//
+//        window.clear();
+//
+//        for (int i = 0; i < 10; i++) {
+//            for (int j = 0; j < 10; j++) {
+//                window.draw(squares[i][j]);
+//            }
+//        }
+//
+//        window.draw(menu);
+//
+//        for (auto &bug: bugs) {
+//            sf::Sprite sprite;
+//            if(bug->isAlive()){
+//            if (dynamic_cast<Crawler *>(bug)) {
+//                sprite.setTexture(crawlerTexture);
+//                sprite.setScale(0.2, 0.2);
+////                sprite.setColor(sf::Color(255, 255, 255, 128)); // alpha value of 128 (50% transparency)
+//            } else if (dynamic_cast<Hopper *>(bug)) {
+//                sprite.setTexture(hopperTexture);
+//                sprite.setScale(0.2, 0.2);
+//            } else {
+//                sprite.setTexture(bishopTexture);
+//                sprite.setScale(0.35, 0.35);
+//            }
+//        }
+//
+//            sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
+//            window.draw(sprite);
+//        }
+//
+//        window.display();
+//    }
+//}
+
 void Board::drawBoard() {
     //create a window
     sf::RenderWindow window(sf::VideoMode(1500, 1000), "Bug Game");
@@ -534,20 +672,20 @@ void Board::drawBoard() {
 
     //load the bug textures
     sf::Texture crawlerTexture;
-    if (!crawlerTexture.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/crawler2.png")) {
+    if (!crawlerTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/crawler2.png")) {
         std::cerr << "Failed to load crawler.png" << std::endl;
         return;
     }
 
 
     sf::Texture hopperTexture;
-    if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/hopper2.png")) {
+    if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/hopper2.png")) {
         std::cerr << "Failed to load hopper.png" << std::endl;
         return;
     }
 
     sf::Texture bishopTexture;
-    if (!bishopTexture.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/bishop2.png")) {
+    if (!bishopTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/bishop2.png")) {
         std::cerr << "Failed to load bishop.png" << std::endl;
         return;
     }
@@ -559,7 +697,7 @@ void Board::drawBoard() {
             sprite.setTexture(crawlerTexture);
         } else if (dynamic_cast<Hopper *>(bug)) {
             sprite.setTexture(hopperTexture);
-        } else{
+        } else {
             sprite.setTexture(bishopTexture);
         }
 
@@ -575,10 +713,29 @@ void Board::drawBoard() {
     menu.setPosition(1000, 0); // set the x-coordinate to 700
     menu.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
 
+    // create a font for the timer text
+    sf::Font font;
+    if (!font.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/arial.ttf")) {
+        std::cerr << "Failed to load font" << std::endl;
+        return;
+    }
 
+    // create a text object for the timer
+//    sf::Text timerText("", font, 50);
+//    timerText.setPosition(1050, 100); // set the position in the menu bar
+//    timerText.setFillColor(sf::Color::White);
 
-    // add event loop to handle user input
+    // set the timer duration in seconds
+    int timerDuration = 3;
+    sf::Clock clock;
+    sf::Time timeElapsed = clock.getElapsedTime();
+    sf::Time timeRemaining = sf::seconds(timerDuration) - timeElapsed;
+    //for rounds
+    int round = 1;
     while (window.isOpen()) {
+// update time elapsed and time remaining
+        timeElapsed = clock.getElapsedTime();
+        timeRemaining = sf::seconds(timerDuration) - timeElapsed;
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
@@ -587,50 +744,46 @@ void Board::drawBoard() {
                 // handle left mouse button press
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 tapBoard();
-                // check if there is only one bug left
-                if (countAliveBugs() == 1) {
-                    // get the last alive bug
-                    Bug* lastBug = findLastAliveBug();
-                    // display "game over" and the winner's ID
-                    sf::Font font;
-                    if (!font.loadFromFile("C:/Users/orjie/CLionProjects/Bug_Project1/arial.ttf")) {
-                        std::cerr << "Failed to load font" << std::endl;
-                        return;
-                    }
-                    window.clear();
-                    sf::Text text;
-                    text.setFont(font);
-                    text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
-                    text.setCharacterSize(50);
-                    text.setPosition(200, 200);
-                    text.setFillColor(sf::Color::Red);
-                    window.draw(text);
-                    window.display();
+            }
+            // check if there is only one bug left
+            if (countAliveBugs() == 1) {
+                // get the last alive bug
+                Bug *lastBug = findLastAliveBug();
+                // display "game over" and the winner's ID
+                sf::Text text;
+                text.setFont(font);
+                text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
+                text.setCharacterSize(50);
+                text.setPosition(200, 200);
+                text.setFillColor(sf::Color::Red);
+                window.draw(text);
+                window.display();
 
-                    // wait for 3 seconds before closing the window
-                    sf::sleep(sf::seconds(3));
-                    window.close();
-                }
+                // wait for 3 seconds before closing the window
+                sf::sleep(sf::seconds(3));
+                window.close();
             }
         }
 
         window.clear();
 
+// draw the squares on the board
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 window.draw(squares[i][j]);
             }
         }
 
+// draw the menu bar
         window.draw(menu);
 
+// draw the bugs on the board
         for (auto &bug: bugs) {
             sf::Sprite sprite;
-            if(bug->isAlive()){
+            if (bug->isAlive()) {
                 if (dynamic_cast<Crawler *>(bug)) {
                     sprite.setTexture(crawlerTexture);
                     sprite.setScale(0.2, 0.2);
-//                sprite.setColor(sf::Color(255, 255, 255, 128)); // alpha value of 128 (50% transparency)
                 } else if (dynamic_cast<Hopper *>(bug)) {
                     sprite.setTexture(hopperTexture);
                     sprite.setScale(0.2, 0.2);
@@ -639,9 +792,36 @@ void Board::drawBoard() {
                     sprite.setScale(0.35, 0.35);
                 }
             }
-
             sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
             window.draw(sprite);
+        }
+
+// draw the timer in the menu bar
+        sf::Text timerText;
+        timerText.setFont(font);
+        timerText.setString("Time Remaining: " + std::to_string((int) timeRemaining.asSeconds()) + " seconds");
+        timerText.setCharacterSize(30);
+        timerText.setPosition(1020, 20);
+        timerText.setFillColor(sf::Color::Black);
+        window.draw(timerText);
+
+        //draw the number of rounds in the menu bar
+        //create a text object to keep track of rounds
+        sf::Text roundsText;
+        roundsText.setFont(font);
+        roundsText.setString("Round: " + std::to_string((int)round));
+        roundsText.setCharacterSize(30);
+        roundsText.setPosition(1020, 100); // set the position in the menu bar
+        roundsText.setFillColor(sf::Color::Black);
+        window.draw(roundsText);
+
+
+
+// check if time is up
+        if (timeRemaining.asSeconds() <= 0) {
+            tapBoard();
+            round++;
+            clock.restart();
         }
 
         window.display();
