@@ -736,6 +736,13 @@ void Board::drawBoard() {
     sf::Time timeRemaining = sf::seconds(timerDuration) - timeElapsed;
     //for rounds
     int round = 1;
+
+    // create a text object to display the bug details in the menu bar
+    sf::Text bugDetails;
+    bugDetails.setFont(font);
+    bugDetails.setCharacterSize(30);
+    bugDetails.setPosition(1020, 200); // set the position in the menu bar
+    bugDetails.setFillColor(sf::Color::Black);
     while (window.isOpen()) {
         // check if there is only one bug left
         if (countAliveBugs() == 1) {
@@ -768,6 +775,37 @@ void Board::drawBoard() {
                 tapBoard();
                 round++;
                 clock.restart();
+            }
+
+            //to add an event when the user right clicks the board and a bug is in that position it
+            //displays the details of that bug
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                int x = mousePos.x;
+                int y = mousePos.y;
+                int xSquare = x / 100;
+                int ySquare = y / 100;
+                for (auto &bug: bugs) {
+                    if (bug->isAlive()) {
+                        if (bug->getPosition().first == xSquare && bug->getPosition().second == ySquare) {
+                            // set the bug details text
+                            std::string details = "Type: ";
+                            if (dynamic_cast<Crawler*>(bug)) {
+                                details += "Crawler\n";
+                            } else if (dynamic_cast<Hopper*>(bug)) {
+                                details += "Hopper\n";
+                            } else {
+                                details += "Bishop\n";
+                            }
+                            details += "ID: " + std::to_string(bug->getId()) + "\n";
+                            details += "Size: " + std::to_string(bug->getSize()) + "\n";
+//                            details += "Path: " + std::to_string(bug->getPath()) + "\n";
+                            details += "Direction: " + std::to_string(bug->getDirection()) + "\n";
+                            details += "Position: (" + std::to_string(bug->getPosition().first) + ", " + std::to_string(bug->getPosition().second) + ")\n";
+                            bugDetails.setString(details);
+                        }
+                    }
+                }
             }
         }
 
@@ -868,11 +906,14 @@ void Board::drawBoard() {
         //create a text object to keep track of rounds
         sf::Text roundsText;
         roundsText.setFont(font);
-        roundsText.setString("Round: " + std::to_string((int)round));
+        roundsText.setString("Round: " + std::to_string((int) round));
         roundsText.setCharacterSize(30);
         roundsText.setPosition(1020, 100); // set the position in the menu bar
         roundsText.setFillColor(sf::Color::Black);
         window.draw(roundsText);
+
+        // draw the bug details in the menu bar
+        window.draw(bugDetails);
 
 
 
@@ -886,7 +927,6 @@ void Board::drawBoard() {
         window.display();
     }
 }
-
 
 
 //destructors
