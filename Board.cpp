@@ -663,9 +663,13 @@ void Board::drawBoard() {
 
             //set the color of each square
             if ((i + j) % 2 == 0) {
-                squares[i][j].setFillColor(sf::Color::Black);
+                squares[i][j].setFillColor(sf::Color::White);
+                squares[i][j].setOutlineColor(sf::Color::Black);
+                squares[i][j].setOutlineThickness(3);
             } else {
                 squares[i][j].setFillColor(sf::Color::White);
+                squares[i][j].setOutlineColor(sf::Color::Black);
+                squares[i][j].setOutlineThickness(3);
             }
         }
     }
@@ -679,7 +683,7 @@ void Board::drawBoard() {
 
 
     sf::Texture hopperTexture;
-    if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/hopper2.png")) {
+    if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/hopper3.png")) {
         std::cerr << "Failed to load hopper.png" << std::endl;
         return;
     }
@@ -733,6 +737,24 @@ void Board::drawBoard() {
     //for rounds
     int round = 1;
     while (window.isOpen()) {
+        // check if there is only one bug left
+        if (countAliveBugs() == 1) {
+            // get the last alive bug
+            Bug *lastBug = findLastAliveBug();
+            // display "game over" and the winner's ID
+            sf::Text text;
+            text.setFont(font);
+            text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
+            text.setCharacterSize(50);
+            text.setPosition(200, 200);
+            text.setFillColor(sf::Color::Red);
+            window.draw(text);
+            window.display();
+
+            // wait for 3 seconds before closing the window
+            sf::sleep(sf::seconds(3));
+            window.close();
+        }
 // update time elapsed and time remaining
         timeElapsed = clock.getElapsedTime();
         timeRemaining = sf::seconds(timerDuration) - timeElapsed;
@@ -744,24 +766,8 @@ void Board::drawBoard() {
                 // handle left mouse button press
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 tapBoard();
-            }
-            // check if there is only one bug left
-            if (countAliveBugs() == 1) {
-                // get the last alive bug
-                Bug *lastBug = findLastAliveBug();
-                // display "game over" and the winner's ID
-                sf::Text text;
-                text.setFont(font);
-                text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
-                text.setCharacterSize(50);
-                text.setPosition(200, 200);
-                text.setFillColor(sf::Color::Red);
-                window.draw(text);
-                window.display();
-
-                // wait for 3 seconds before closing the window
-                sf::sleep(sf::seconds(3));
-                window.close();
+                round++;
+                clock.restart();
             }
         }
 
@@ -783,14 +789,67 @@ void Board::drawBoard() {
             if (bug->isAlive()) {
                 if (dynamic_cast<Crawler *>(bug)) {
                     sprite.setTexture(crawlerTexture);
-                    sprite.setScale(0.2, 0.2);
+                    if (bug->getSize() >= 85) {
+                        sprite.setScale(0.222, 0.222);
+                    } else {
+                        sprite.setScale(0.08 + 0.00118 * bug->getSize(), 0.08 + 0.00118 * bug->getSize());
+                    }
                 } else if (dynamic_cast<Hopper *>(bug)) {
                     sprite.setTexture(hopperTexture);
-                    sprite.setScale(0.2, 0.2);
+                    if (bug->getSize() >= 213) {
+                        sprite.setScale(0.25, 0.25);
+                    } else {
+                        sprite.setScale(0.08 + 0.00094 * bug->getSize(), 0.08 + 0.00094 * bug->getSize());
+                    }
                 } else {
                     sprite.setTexture(bishopTexture);
-                    sprite.setScale(0.35, 0.35);
+                    if (bug->getSize() >= 118) {
+                        sprite.setScale(0.4, 0.4);
+                    } else {
+                        sprite.setScale(0.12 + 0.00169 * bug->getSize(), 0.12 + 0.00169 * bug->getSize());
+                    }
                 }
+
+
+                // Add a text object for the bug size
+                sf::Text sizeText;
+                sizeText.setFont(font);
+                sizeText.setString(std::to_string(bug->getSize()));
+                sizeText.setCharacterSize(30);
+                sizeText.setPosition(bug->getPosition().first * 100 + 35, bug->getPosition().second * 100 + 55);
+                sizeText.setFillColor(sf::Color::Red);
+                window.draw(sizeText);
+
+                //so now we want the bugs direction to be the direction they are facing
+                //so we need to get the direction of the bug
+                //then we need to rotate the sprite to face that direction
+                //then we need to draw the sprite
+//                switch (bug->getDirection()) {
+//                    case Direction::North:
+//                        sprite.setRotation(0);
+//                        break;
+//                    case Direction::South:
+//                        sprite.setRotation(180);
+//                        break;
+//                    case Direction::West:
+//                        sprite.setRotation(270);
+//                        break;
+//                    case Direction::East:
+//                        sprite.setRotation(90);
+//                        break;
+//                    case Direction::NorthWest:
+//                        sprite.setRotation(315);
+//                        break;
+//                    case Direction::NorthEast:
+//                        sprite.setRotation(45);
+//                        break;
+//                    case Direction::SouthWest:
+//                        sprite.setRotation(225);
+//                        break;
+//                    case Direction::SouthEast:
+//                        sprite.setRotation(135);
+//                        break;
+//                }
             }
             sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
             window.draw(sprite);
