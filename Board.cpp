@@ -824,27 +824,51 @@ void Board::drawBoard() {
 // draw the bugs on the board
         for (auto &bug: bugs) {
             sf::Sprite sprite;
+            float offsetX=0;
+            float offsetY=0;
             if (bug->isAlive()) {
+
+
+
                 if (dynamic_cast<Crawler *>(bug)) {
                     sprite.setTexture(crawlerTexture);
+
+                    rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 85) {
                         sprite.setScale(0.222, 0.222);
+                        offsetX *= 0.222;
+                        offsetY *= 0.222;
+
                     } else {
                         sprite.setScale(0.08 + 0.00118 * bug->getSize(), 0.08 + 0.00118 * bug->getSize());
+                        offsetX *= 0.08 + 0.00118 * bug->getSize();
+                        offsetY *= 0.08 + 0.00118 * bug->getSize();
+
                     }
                 } else if (dynamic_cast<Hopper *>(bug)) {
                     sprite.setTexture(hopperTexture);
+                    rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 213) {
                         sprite.setScale(0.25, 0.25);
+                        offsetX *= 0.25;
+                        offsetY *= 0.25;
                     } else {
                         sprite.setScale(0.08 + 0.00094 * bug->getSize(), 0.08 + 0.00094 * bug->getSize());
+                        offsetX *= 0.08 + 0.00094 * bug->getSize();
+                        offsetY *= 0.08 + 0.00094 * bug->getSize();
+
                     }
                 } else {
                     sprite.setTexture(bishopTexture);
+                    rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 118) {
                         sprite.setScale(0.4, 0.4);
+                        offsetX *= 0.4;
+                        offsetY *= 0.4;
                     } else {
                         sprite.setScale(0.12 + 0.00169 * bug->getSize(), 0.12 + 0.00169 * bug->getSize());
+                        offsetX *= 0.08 + 0.00094 * bug->getSize();
+                        offsetY *= 0.08 + 0.00094 * bug->getSize();
                     }
                 }
 
@@ -862,34 +886,9 @@ void Board::drawBoard() {
                 //so we need to get the direction of the bug
                 //then we need to rotate the sprite to face that direction
                 //then we need to draw the sprite
-//                switch (bug->getDirection()) {
-//                    case Direction::North:
-//                        sprite.setRotation(0);
-//                        break;
-//                    case Direction::South:
-//                        sprite.setRotation(180);
-//                        break;
-//                    case Direction::West:
-//                        sprite.setRotation(270);
-//                        break;
-//                    case Direction::East:
-//                        sprite.setRotation(90);
-//                        break;
-//                    case Direction::NorthWest:
-//                        sprite.setRotation(315);
-//                        break;
-//                    case Direction::NorthEast:
-//                        sprite.setRotation(45);
-//                        break;
-//                    case Direction::SouthWest:
-//                        sprite.setRotation(225);
-//                        break;
-//                    case Direction::SouthEast:
-//                        sprite.setRotation(135);
-//                        break;
-//                }
+
             }
-            sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
+            sprite.setPosition((bug->getPosition().first * 100)+offsetX, (bug->getPosition().second * 100)+offsetY);
             window.draw(sprite);
         }
 
@@ -926,6 +925,40 @@ void Board::drawBoard() {
 
         window.display();
     }
+}
+
+void Board::rotate(Bug *const &bug, sf::Sprite &sprite, float &offsetX, float &offsetY) const {
+    offsetX = sprite.getLocalBounds().width / 2;
+    offsetY = sprite.getLocalBounds().height / 2;
+    sprite.setOrigin(offsetX, offsetY);
+    switch (bug->getDirection()) {
+        case North:
+            sprite.setRotation(0);
+            break;
+        case South:
+            sprite.setRotation(180);
+            break;
+        case West:
+            sprite.setRotation(270);
+            break;
+        case East:
+            sprite.setRotation(90);
+            break;
+        case NorthWest:
+            sprite.setRotation(315);
+            break;
+        case NorthEast:
+            sprite.setRotation(45);
+            break;
+        case SouthWest:
+            sprite.setRotation(225);
+            break;
+        case SouthEast:
+            sprite.setRotation(135);
+            break;
+    }
+//    sprite.setOrigin(0,0);
+//    sprite.move(offsetX, offsetY);
 }
 
 
