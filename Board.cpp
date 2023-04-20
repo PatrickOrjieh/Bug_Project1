@@ -656,23 +656,23 @@ void Board::drawBoard() {
     sf::RectangleShape squares[10][10];
 
     //set the size of each square
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            squares[i][j].setSize(sf::Vector2f(100, 100));
-            squares[i][j].setPosition(i * 100, j * 100);
-
-            //set the color of each square
-            if ((i + j) % 2 == 0) {
-                squares[i][j].setFillColor(sf::Color::White);
-                squares[i][j].setOutlineColor(sf::Color::Black);
-                squares[i][j].setOutlineThickness(3);
-            } else {
-                squares[i][j].setFillColor(sf::Color::White);
-                squares[i][j].setOutlineColor(sf::Color::Black);
-                squares[i][j].setOutlineThickness(3);
-            }
-        }
-    }
+//    for (int i = 0; i < 10; i++) {
+//        for (int j = 0; j < 10; j++) {
+//            squares[i][j].setSize(sf::Vector2f(100, 100));
+//            squares[i][j].setPosition(i * 100, j * 100);
+//
+//            //set the color of each square
+//            if ((i + j) % 2 == 0) {
+//                squares[i][j].setFillColor(sf::Color::White);
+//                squares[i][j].setOutlineColor(sf::Color::Black);
+//                squares[i][j].setOutlineThickness(3);
+//            } else {
+//                squares[i][j].setFillColor(sf::Color::White);
+//                squares[i][j].setOutlineColor(sf::Color::Black);
+//                squares[i][j].setOutlineThickness(3);
+//            }
+//        }
+//    }
 
     //load the bug textures
     sf::Texture crawlerTexture;
@@ -695,22 +695,22 @@ void Board::drawBoard() {
     }
 
     //create a bug sprite for each bug on the board
-    for (auto &bug: bugs) {
-        sf::Sprite sprite;
-        if (dynamic_cast<Crawler *>(bug)) {
-            sprite.setTexture(crawlerTexture);
-        } else if (dynamic_cast<Hopper *>(bug)) {
-            sprite.setTexture(hopperTexture);
-        } else {
-            sprite.setTexture(bishopTexture);
-        }
-
-        //set the position of the bug sprite on the board
-        sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
-
-        //draw the bug sprite on the board
-        window.draw(sprite);
-    }
+//    for (auto &bug: bugs) {
+//        sf::Sprite sprite;
+//        if (dynamic_cast<Crawler *>(bug)) {
+//            sprite.setTexture(crawlerTexture);
+//        } else if (dynamic_cast<Hopper *>(bug)) {
+//            sprite.setTexture(hopperTexture);
+//        } else {
+//            sprite.setTexture(bishopTexture);
+//        }
+//
+//        //set the position of the bug sprite on the board
+//        sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
+//
+//        //draw the bug sprite on the board
+//        window.draw(sprite);
+//    }
 
     // add a rectangle for menu options
     sf::RectangleShape menu(sf::Vector2f(500, 1000));
@@ -737,12 +737,17 @@ void Board::drawBoard() {
     //for rounds
     int round = 1;
 
+    //create a pomiter for the selected bug
+    Bug *selectedBug = nullptr;
+
     // create a text object to display the bug details in the menu bar
     sf::Text bugDetails;
     bugDetails.setFont(font);
     bugDetails.setCharacterSize(30);
     bugDetails.setPosition(1020, 200); // set the position in the menu bar
     bugDetails.setFillColor(sf::Color::Black);
+
+
     while (window.isOpen()) {
         // check if there is only one bug left
         if (countAliveBugs() == 1) {
@@ -788,21 +793,11 @@ void Board::drawBoard() {
                 for (auto &bug: bugs) {
                     if (bug->isAlive()) {
                         if (bug->getPosition().first == xSquare && bug->getPosition().second == ySquare) {
-                            // set the bug details text
-                            std::string details = "Type: ";
-                            if (dynamic_cast<Crawler*>(bug)) {
-                                details += "Crawler\n";
-                            } else if (dynamic_cast<Hopper*>(bug)) {
-                                details += "Hopper\n";
+                            if (selectedBug == bug) {
+                                selectedBug = nullptr; // deselect the bug
                             } else {
-                                details += "Bishop\n";
+                                selectedBug = bug; // select the bug
                             }
-                            details += "ID: " + std::to_string(bug->getId()) + "\n";
-                            details += "Size: " + std::to_string(bug->getSize()) + "\n";
-//                            details += "Path: " + std::to_string(bug->getPath()) + "\n";
-                            details += "Direction: " + std::to_string(bug->getDirection()) + "\n";
-                            details += "Position: (" + std::to_string(bug->getPosition().first) + ", " + std::to_string(bug->getPosition().second) + ")\n";
-                            bugDetails.setString(details);
                         }
                     }
                 }
@@ -812,8 +807,32 @@ void Board::drawBoard() {
         window.clear();
 
 // draw the squares on the board
+//        for (int i = 0; i < 10; i++) {
+//            for (int j = 0; j < 10; j++) {
+//                window.draw(squares[i][j]);
+//            }
+//        }
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
+                squares[i][j].setSize(sf::Vector2f(100, 100));
+                squares[i][j].setPosition(i * 100, j * 100);
+                if ((i + j) % 2 == 0) {
+                    squares[i][j].setFillColor(sf::Color::White);
+                    squares[i][j].setOutlineColor(sf::Color::Black);
+                    squares[i][j].setOutlineThickness(3);
+                } else {
+                    squares[i][j].setFillColor(sf::Color::White);
+                    squares[i][j].setOutlineColor(sf::Color::Black);
+                    squares[i][j].setOutlineThickness(3);
+                }
+                // add this if-statement to check if the current square is the selected one
+                if (selectedBug != nullptr && i == selectedBug->getPosition().first && j == selectedBug->getPosition().second) {
+                    if(selectedBug->isAlive()){
+                        squares[i][j].setFillColor(sf::Color::Green);
+                    }else{
+                        squares[i][j].setFillColor(sf::Color::White);
+                    }
+                }
                 window.draw(squares[i][j]);
             }
         }
@@ -910,6 +929,35 @@ void Board::drawBoard() {
         roundsText.setPosition(1020, 100); // set the position in the menu bar
         roundsText.setFillColor(sf::Color::Black);
         window.draw(roundsText);
+
+        //add the details of the selected bug to the bug details
+        // set the bug details text
+        if (selectedBug != nullptr && selectedBug->isAlive()) {
+            std::string details = "Type: ";
+            if (dynamic_cast<Crawler*>(selectedBug)) {
+                details += "Crawler\n";
+            } else if (dynamic_cast<Hopper*>(selectedBug)) {
+                details += "Hopper\n";
+            } else {
+                details += "Bishop\n";
+            }
+            details += "ID: " + std::to_string(selectedBug->getId()) + "\n";
+            details += "Size: " + std::to_string(selectedBug->getSize()) + "\n";
+            details += "Direction: " + std::to_string(selectedBug->getDirection()) + "\n";
+            details += "Position: (" + std::to_string(selectedBug->getPosition().first) + ", " + std::to_string(selectedBug->getPosition().second) + ")\n";
+            bugDetails.setString(details);
+            window.draw(bugDetails);
+        }
+        else if (selectedBug != nullptr && !selectedBug->isAlive()) {
+            //bug (101) is dead
+            bugDetails.setString("Bug (" + std::to_string(selectedBug->getId()) + ") is dead");
+            window.draw(bugDetails);
+        }
+        else{
+            bugDetails.setString("No bug selected");
+            window.draw(bugDetails);
+        }
+
 
         // draw the bug details in the menu bar
         window.draw(bugDetails);
