@@ -9,6 +9,7 @@
 #include "Bug.h"
 #include "Direction.h"
 #include "Utils.h"
+#include "SuperBug.h"
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
@@ -489,24 +490,24 @@ void Board::simulate() {
 
 int Board::countAliveBugs() const {
     int count = 0;
-    for (int i = 0; i < 100; i++) {
-        for (Bug *bug: cells[i]) {
-            if (bug->isAlive()) {
-                count++;
-            }
+//    for (int i = 0; i < 100; i++) {
+    for (Bug *bug: bugs) {
+        if (bug->isAlive()) {
+            count++;
         }
     }
+//    }
     return count;
 }
 
 Bug *Board::findLastAliveBug() const {
-    for (int i = 0; i < 100; i++) {
-        for (Bug *bug: cells[i]) {
-            if (bug->isAlive()) {
-                return bug;
-            }
+//    for (int i = 0; i < 100; i++) {
+    for (Bug *bug: bugs) {
+        if (bug->isAlive()) {
+            return bug;
         }
     }
+//    }
     return nullptr;
 }
 
@@ -694,6 +695,20 @@ void Board::drawBoard() {
         return;
     }
 
+    sf::Texture superBugTexture;
+    if (!superBugTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/super.png")) {
+        std::cerr << "Failed to load superbug.png" << std::endl;
+        return;
+    }
+
+    // Add the SuperBug to the board
+    SuperBug *superBug = new SuperBug(001, make_pair(7,7), static_cast<Direction>(1), 20,true);
+    bugs.push_back(superBug);
+
+    // Add the SuperBug's texture to the game
+//    sf::Sprite superBugSprite;
+//    superBugSprite.setTexture(superBugTexture);
+
     //create a bug sprite for each bug on the board
 //    for (auto &bug: bugs) {
 //        sf::Sprite sprite;
@@ -764,7 +779,7 @@ void Board::drawBoard() {
             window.display();
 
             // wait for 3 seconds before closing the window
-            sf::sleep(sf::seconds(3));
+            sf::sleep(sf::seconds(6));
             window.close();
         }
 // update time elapsed and time remaining
@@ -802,6 +817,31 @@ void Board::drawBoard() {
                     }
                 }
             }
+
+            // Move the SuperBug based on user input
+            if (selectedBug == superBug) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                    if (superBug->getPosition().first > 0) { // check if not at left edge
+                        superBug->move();
+                        superBug->setDirection(West);
+                    }
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                    if (superBug->getPosition().first < 9) { // check if not at right edge
+                        superBug->move();
+                        superBug->setDirection(East);
+                    }
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+                    if (superBug->getPosition().second > 0) { // check if not at top edge
+                        superBug->move();
+                        superBug->setDirection(North);
+                    }
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+                    if (superBug->getPosition().second < 9) { // check if not at bottom edge
+                        superBug->move();
+                        superBug->setDirection(South);
+                    }
+                }
+            }
         }
 
         window.clear();
@@ -836,6 +876,8 @@ void Board::drawBoard() {
                 window.draw(squares[i][j]);
             }
         }
+
+
 
 // draw the menu bar
         window.draw(menu);
@@ -877,8 +919,21 @@ void Board::drawBoard() {
                         offsetY *= 0.08 + 0.00094 * bug->getSize();
 
                     }
-                } else {
+                } else if (dynamic_cast<Bishop *>(bug)) {
                     sprite.setTexture(bishopTexture);
+                    rotate(bug, sprite, offsetX, offsetY);
+                    if (bug->getSize() >= 118) {
+                        sprite.setScale(0.4, 0.4);
+                        offsetX *= 0.4;
+                        offsetY *= 0.4;
+                    } else {
+                        sprite.setScale(0.12 + 0.00169 * bug->getSize(), 0.12 + 0.00169 * bug->getSize());
+                        offsetX *= 0.08 + 0.00094 * bug->getSize();
+                        offsetY *= 0.08 + 0.00094 * bug->getSize();
+                    }
+                }
+                else{
+                    sprite.setTexture(superBugTexture);
                     rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 118) {
                         sprite.setScale(0.4, 0.4);
@@ -907,7 +962,13 @@ void Board::drawBoard() {
                 //then we need to draw the sprite
 
             }
+
             sprite.setPosition((bug->getPosition().first * 100)+offsetX, (bug->getPosition().second * 100)+offsetY);
+            // Draw the SuperBug on the board
+//            if (superBug->isAlive()) {
+//                superBugSprite.setPosition((bug->getPosition().first * 100)+offsetX, (bug->getPosition().second * 100)+offsetY);
+//                window.draw(superBugSprite);
+//            }
             window.draw(sprite);
         }
 
@@ -938,8 +999,11 @@ void Board::drawBoard() {
                 details += "Crawler\n";
             } else if (dynamic_cast<Hopper*>(selectedBug)) {
                 details += "Hopper\n";
-            } else {
+            } else if (dynamic_cast<Bishop*>(selectedBug)){
                 details += "Bishop\n";
+            }
+            else{
+                details += "SuperBug\n";
             }
             details += "ID: " + std::to_string(selectedBug->getId()) + "\n";
             details += "Size: " + std::to_string(selectedBug->getSize()) + "\n";
@@ -961,7 +1025,6 @@ void Board::drawBoard() {
 
         // draw the bug details in the menu bar
         window.draw(bugDetails);
-
 
 
 // check if time is up
