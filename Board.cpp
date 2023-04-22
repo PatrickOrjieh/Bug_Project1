@@ -21,6 +21,8 @@
 #include <string>
 #include <thread>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 
 using namespace std;
 
@@ -258,11 +260,8 @@ void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int si
 
 void Board::displayAllBugs() const {
     //using an iterator through vector<Bug*> cells[]
-    for (int i = 0; i < 100; i++) {
-        for (std::vector<Bug *>::const_iterator it = cells[i].cbegin(); it != cells[i].cend(); ++it) {
-            //use the displayBug method from the Crawler and Hopper classes
-            (*it)->displayBug();
-        }
+    for(Bug *bug : bugs) {
+        bug->displayBug();
     }
 }
 
@@ -701,9 +700,28 @@ void Board::drawBoard() {
         return;
     }
 
+    //check if the superbug is already on the board
+    bool superBugOnBoard = false;
+    for (auto &bug: bugs) {
+        if (dynamic_cast<SuperBug *>(bug)) {
+            superBugOnBoard = true;
+        }
+    }
+
     // Add the SuperBug to the board
-    SuperBug *superBug = new SuperBug(001, make_pair(7,7), static_cast<Direction>(1), 20,true);
-    bugs.push_back(superBug);
+    if(!superBugOnBoard) {
+        SuperBug *superBug = new SuperBug(001, make_pair(7, 7), static_cast<Direction>(1), 20, true);
+        bugs.push_back(superBug);
+    }
+
+    SuperBug *superBug;
+    for (auto &bug: bugs) {
+        if (dynamic_cast<SuperBug *>(bug)) {
+            superBug = dynamic_cast<SuperBug *>(bug);
+        }
+    }
+//    SuperBug *superBug = new SuperBug(001, make_pair(7,7), static_cast<Direction>(1), 20,true);
+//    bugs.push_back(superBug);
 
     // Add the SuperBug's texture to the game
 //    sf::Sprite superBugSprite;
@@ -762,29 +780,36 @@ void Board::drawBoard() {
     bugDetails.setPosition(1020, 200); // set the position in the menu bar
     bugDetails.setFillColor(sf::Color::Black);
 
+    sf::Text text;
+
 
     while (window.isOpen()) {
+        // update time elapsed and time remaining
+        timeElapsed = clock.getElapsedTime();
+        timeRemaining = sf::seconds(timerDuration) - timeElapsed;
+
+        // check if time is up
+        if (timeRemaining.asSeconds() <= 0) {
+            tapBoard();
+            round++;
+            clock.restart();
+        }
         // check if there is only one bug left
         if (countAliveBugs() == 1) {
             // get the last alive bug
             Bug *lastBug = findLastAliveBug();
             // display "game over" and the winner's ID
-            sf::Text text;
             text.setFont(font);
             text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
             text.setCharacterSize(50);
             text.setPosition(200, 200);
             text.setFillColor(sf::Color::Red);
-            window.draw(text);
-            window.display();
+//            window.display();
 
             // wait for 3 seconds before closing the window
-            sf::sleep(sf::seconds(6));
-            window.close();
+//            sf::sleep(sf::seconds(6));
+//            window.close();
         }
-// update time elapsed and time remaining
-        timeElapsed = clock.getElapsedTime();
-        timeRemaining = sf::seconds(timerDuration) - timeElapsed;
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
@@ -1026,13 +1051,8 @@ void Board::drawBoard() {
         // draw the bug details in the menu bar
         window.draw(bugDetails);
 
+        window.draw(text);
 
-// check if time is up
-        if (timeRemaining.asSeconds() <= 0) {
-            tapBoard();
-            round++;
-            clock.restart();
-        }
 
         window.display();
     }
