@@ -648,6 +648,15 @@ Bug *Board::findLastAliveBug() const {
 //    }
 //}
 
+bool Board::isCellEmpty(int x, int y) {
+    for (auto &bug: bugs) {
+        if (bug->getPosition().first == x && bug->getPosition().second == y) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void Board::drawBoard() {
     //create a window
     sf::RenderWindow window(sf::VideoMode(1500, 1000), "Bug Game");
@@ -847,23 +856,43 @@ void Board::drawBoard() {
             if (selectedBug == superBug) {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
                     if (superBug->getPosition().first > 0) { // check if not at left edge
-                        superBug->move();
-                        superBug->setDirection(West);
+                        //firsrt chexk if the cell the bug is moving to is empty
+                        //if it is not empty teh bug cannot move
+                        //subtract 1 from the x coordinate and check if there is a bug in that position
+                        //if there is a bug in that position then the bug cannot move
+                        if (isCellEmpty(superBug->getPosition().first - 1, superBug->getPosition().second)) {
+                            superBug->move();
+                            superBug->setDirection(West);
+                        }
+//                        superBug->move();
+//                        superBug->setDirection(West);
                     }
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
                     if (superBug->getPosition().first < 9) { // check if not at right edge
-                        superBug->move();
-                        superBug->setDirection(East);
+                        if (isCellEmpty(superBug->getPosition().first + 1, superBug->getPosition().second)) {
+                            superBug->move();
+                            superBug->setDirection(East);
+                        }
+//                        superBug->move();
+//                        superBug->setDirection(East);
                     }
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                     if (superBug->getPosition().second > 0) { // check if not at top edge
-                        superBug->move();
-                        superBug->setDirection(North);
+                        if (isCellEmpty(superBug->getPosition().first, superBug->getPosition().second - 1)) {
+                            superBug->move();
+                            superBug->setDirection(North);
+                        }
+//                        superBug->move();
+//                        superBug->setDirection(North);
                     }
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                     if (superBug->getPosition().second < 9) { // check if not at bottom edge
-                        superBug->move();
-                        superBug->setDirection(South);
+                        if (isCellEmpty(superBug->getPosition().first, superBug->getPosition().second + 1)) {
+                            superBug->move();
+                            superBug->setDirection(South);
+                        }
+//                        superBug->move();
+//                        superBug->setDirection(South);
                     }
                 }
             }
@@ -1015,6 +1044,16 @@ void Board::drawBoard() {
         roundsText.setPosition(1020, 100); // set the position in the menu bar
         roundsText.setFillColor(sf::Color::Black);
         window.draw(roundsText);
+
+
+        //at the bottom of the menu bar, draw the @Creator : ORJIEH PATRICK
+        sf::Text creatorText;
+        creatorText.setFont(font);
+        creatorText.setString("@Creator: PATRICK ORJIEH");
+        creatorText.setCharacterSize(30);
+        creatorText.setPosition(1020, 950); // set the position in the menu bar
+        creatorText.setFillColor(sf::Color::Black);
+        window.draw(creatorText);
 
         //add the details of the selected bug to the bug details
         // set the bug details text

@@ -119,6 +119,8 @@ public:
     ~Board();
 
     void rotate(Bug *const &bug, sf::Sprite &sprite, float &offsetX, float &offsetY) const;
+
+    bool isCellEmpty(int x, int y);
 };
 
 
