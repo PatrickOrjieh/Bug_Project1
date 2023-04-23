@@ -13,34 +13,20 @@
 //Abstract Base Class) ( Data members to be declared as “private”)
 class Bug {
 protected:
-    //Identification number (id) for a bug (1,2,3,4,…)
     int id;
 
-    //Co-ordinate pair (x,y) represented in a ‘pair’ struct from
-    //<utility> standard library. (0,0) is top left cell on board.
     std::pair<int, int> position;
 
-    //Size of the bug (initially 1-20); biggest bug wins in a fight
-    //and others on same cell are eaten. Winner grows during a
-    //fight by the sum of the sizes of other bugs eaten.
     int size;
 
-    //Flag indicating life status of a bug. All bugs set to ‘true’
-    //initially. When eaten, this flag is set to ‘false’.
-    //true => alive, false => dead
     bool alive;
 
-    // Path taken by a bug. (i.e. the List of positions (on grid) that a
-    //bug visited.)
     std::list<std::pair<int, int>> path;
 
-    //for the direction of the bug
     Direction direction;
 
-    //will keep a variable called predator to know the bug that ate the others
     int predator;
 
-    //string to store the type of the bug
     std::string type;
 
 public:

@@ -17,8 +17,6 @@ int main() {
         }
         cout << "File is Invalid or No Bug was created from the File" << endl;
     }
-//    string filename = utils::readString("Please enter the name of the file to read the bug data from: ");
-//    board.initialiseBoard(filename);
 
     while(true){
         printMenu();
@@ -26,11 +24,7 @@ int main() {
         switch(choice){
             case 1:
                 cout << "Displaying all the bugs on the board" << endl;
-//                if(board.isBoardEmpty()){
-//                    cout << "There are no bugs on the board" << endl;
-//                } else {
                 board.displayAllBugs();
-//                }
                 break;
             case 2:
                 cout << "Finding a bug by id" << endl;
@@ -71,21 +65,12 @@ int main() {
 void printMenu() {
     std::cout << "Welcome to the Bug Game!" << std::endl;
     std::cout << "Please select an option from the menu below:" << std::endl;
-//    std::cout << "1. Initialise the bug board" << std::endl;
-    //display all the bugs in the bug vector
     std::cout << "1. Display all the bugs on the board" << std::endl;
-    //find  a bug by id
     std::cout << "2. Find a bug by id" << std::endl;
-    //tap the bug board
     std::cout << "3. Tap the bug board" << std::endl;
-    //diaply the life history of all the bugs
     std::cout << "4. Display the life history of all the bugs" << std::endl;
-    //6. Exit - Write the life history of all bugs to a text file called “bugs_life_history_date_time.out”
     std::cout << "5. Exit" << std::endl;
-    //display all cells
     std::cout << "6. Display all cells" << std::endl;
-    //run simulation
     std::cout << "7. Run simulation Without Graphics" << std::endl;
-    //draw board
     std::cout << "8. Play board GUI" << std::endl;
 }

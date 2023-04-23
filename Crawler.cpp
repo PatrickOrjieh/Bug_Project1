@@ -60,9 +60,6 @@ void Crawler::move() {
     addPath(currentPosition);
 }
 
-//method to display the bug in a good way with all its attributes
-//like this 101 Crawler (3,4) 18 East Dead
-//dhow twh action direction no tjust the number
 void Crawler::displayBug() {
     std::cout << getId() << " Crawler (" << getPosition().first << "," << getPosition().second << ") " << getSize()
               << " ";

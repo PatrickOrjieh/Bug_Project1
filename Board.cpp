@@ -28,25 +28,13 @@ using namespace std;
 
 //default constructor
 Board::Board() {
-    //initialise the cells
-//    for (int i = 0; i < BOARD_SIZE; i++) {
-//        for (int j = 0; j < BOARD_SIZE; j++) {
-//            cells[i][j] = std::make_pair(i,j);
-//        }
-//    }
 }
 
-//method to initialise the board from a text file that has the bug data with proper error handling and error checking
-//the data is in the following format:bug_type = char, bug_id = int, bug_x = int, bug_y = int, direction = 1/2/3/4,
-//size = int and if the bug is a hopper then the hop distance is also included and as the data is read checks that
-//the position is valid and that the bug is not already in that position. for all parts do proper error handling and error checking
-//new bug type is bishop and it moves in a diagonal direction and direction is 5/6/7/8 and the bishop can only move 1 -6 cells
-// This function initializes the board by reading bug data from a file and creating bugs on the board. The file name is passed as an argument to the function.
+//method to initialise the board with the bugs from the file
 bool Board::initialiseBoard(const std::string &filename) {
     bool done = false;
     std::ifstream file(filename);
-    //The function first opens the file and checks if it is open.
-    // If it is not open, an error message is displayed and the function returns
+    //The function first checks if the file is open. If the file is not open, an error message is displayed and the function returns false.
     if (!file.is_open()) {
         std::cout << "Error: File not found" << std::endl;
         return false;
@@ -100,6 +88,7 @@ bool Board::initialiseBoard(const std::string &filename) {
             createCrawlerBug(bugId, bugX, bugY, direction, size);
         }
     }
+    //The function returns true if the board is initialised successfully.
     if(!isBoardEmpty()){
         done = true;
     }
@@ -173,7 +162,6 @@ bool Board::isValidBugData(const std::string &bugType, const std::string &bugIdS
 
 //method to create a hopper bug
 void Board::createHopperBug(int bugId, int bugX, int bugY, int direction, int size, int hopLength) {
-    //    Hopper(int id, std::pair<int, int> position, Direction direction, int size, bool alive, int hopLength);
     Hopper *hopper = new Hopper(bugId, std::make_pair(bugX, bugY), static_cast<Direction>(direction), size, true,
                                 hopLength);
 
@@ -189,7 +177,6 @@ void Board::createHopperBug(int bugId, int bugX, int bugY, int direction, int si
 
 //method to create a crawler bug
 void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int size) {
-    //    Crawler(int id, std::pair<int, int> position, Direction direction, int size, bool alive);
     Crawler *crawler = new Crawler(bugId, std::make_pair(bugX, bugY), static_cast<Direction>(direction), size, true);
     //add the first position to the path#
 
@@ -204,7 +191,6 @@ void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int s
 
 //method to create a bishop bug
 void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int size, int bishopLength) {
-    //    Bishop(int id, std::pair<int, int> position, Direction direction, int size, bool alive, int bishopLength);
     Bishop *bishop = new Bishop(bugId, std::make_pair(bugX, bugY), static_cast<Direction>(direction), size, true,
                                 bishopLength);
 
@@ -212,7 +198,6 @@ void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int si
 
     //add the first position to the path
     bishop->addPath(std::make_pair(bugX, bugY));
-    //using the formula for the cells
     int position = (bugY * BOARD_SIZE) + bugX;
     cells[position].push_back(bishop);
     bugs.push_back(bishop);
@@ -223,65 +208,14 @@ bool Board::isBoardEmpty() const {
     return bugs.empty();
 }
 
-//check if the board is empty
-//bool Board::isBoardEmpty() const {
-//    return cells->empty();
-//}
-
-//to display all bugs
-//void Board::displayAllBugs() const {
-//    for (const auto& bug : bug_vector) {
-//        std::cout << bug->getId() << " ";
-//        if (dynamic_cast<Crawler*>(bug)) {
-//            std::cout << "Crawler ";
-//        } else {
-//            std::cout << "Hopper ";
-//        }
-//        std::cout << "(" << bug->getPosition().first << "," << bug->getPosition().second << ") ";
-//        std::cout << bug->getSize() << " ";
-//
-//        switch (bug->getDirection()) {
-//            case Direction::North:
-//                std::cout << "North ";
-//                break;
-//            case Direction::East:
-//                std::cout << "East ";
-//                break;
-//            case Direction::South:
-//                std::cout << "South ";
-//                break;
-//            case Direction::West:
-//                std::cout << "West ";
-//                break;
-//        }
-//
-//        if (dynamic_cast<Hopper*>(bug)) {
-//            std::cout << dynamic_cast<Hopper*>(bug)->getHopLength() << " ";
-//        } else {
-//            std::cout << "- ";
-//        }
-//
-//        if (bug->isAlive()) {
-//            std::cout << "Alive";
-//        } else {
-//            std::cout << "Dead";
-//        }
-//
-//        std::cout << std::endl;
-//    }
-//}
-
+//method to display all the bugs, using the displayBug method from the Crawler and Hopper classes
 void Board::displayAllBugs() const {
-    //using an iterator through vector<Bug*> cells[]
     for(Bug *bug : bugs) {
         bug->displayBug();
     }
 }
 
-////3. Find a Bug
-//    //User to be asked to input a bug id, and the system will search for that bug. Display bug details if
-//    //found, otherwise display “bug xxx not found”
-//    void findBugById() const; make use of the displayBug from the Crawler and Hopper classes
+//method to find a bug by its id and display it if it exists
 void Board::findBugById() const {
     int bugId = utils::readInt("Enter bug id: ");
     //i tried looking for teh most efficient way to do this, but i couldn't find anything
@@ -294,38 +228,11 @@ void Board::findBugById() const {
     std::cout << "Bug " << bugId << " not found" << std::endl;
 }
 
-//4. Tap the Bug Board
-//This option simulates tapping the bug board, which prompts all the bugs to move. This will require
-//calling the move() function on all bugs. The move() method must be implemented differently for
-//Crawler and Hopper. (See class details above). Later you will be asked to implement fight/eat.
-//We recommend that you implement only move() initially. The fight and eat behaviour can be
-//developed later, when all other functionality has been implemented.
-//void Board::tapBoard() {
-//    for (Bug* bug : bug_vector) {
-//        bug->move();
-//    }
-//}
-
-//void Board::tapBoard() {
-//    for (int i = 0; i < 100; i++) {
-//        //so for each cell, we iterate through the vector of bugs and call the move method for each bug
-//        for (auto it = cells[i].rbegin(); it != cells[i].rend(); ++it) {
-//            (*it)->move();
-//        }
-//
-//        //so after all bugs have moved, we check if there are any bugs in the same cell
-//        //and if tthey are they fight/eat
-//        //Implement functionality that will cause bugs that land on the same cell to fight. This will happen
-//        //after a round of moves has taken place – invoked by menu option 4. ( Tap ….). The biggest bug in
-//        //the cell will eat all other bugs, and will grow by the sum of the sizes of the bugs it eats. The eaten
-//        //bugs will be marked as dead (‘alive=false’). We can keep ‘tapping’ the bug board until all the bugs
-//        //are dead except one – the Last Bug Standing. Two or more bugs equal in size won’t be able to
-//        //overcome each other so the winner is resolved at random.
-//        //afte movement call teh fight method
-//    }
-//    fight();
-//}
-
+/* The tapBoard method is used to move all the bugs on the board. It first checks if there is only one bug alive.
+ * If there is only one bug alive, it prints out the bug's ID and position and returns.
+ * Otherwise, it iterates through the bugs vector and moves each bug.
+ * Afer moving the bug, it removes the bug from the old position in the cells vector and adds it to the new position.
+ */
 void Board::tapBoard() {
     if(countAliveBugs() == 1) {
         Bug *lastBug = findLastAliveBug();
@@ -346,17 +253,22 @@ void Board::tapBoard() {
         }
     }
 
+    /* The fight method is implemented here where the guys in the same cell fight.
+     * The biggest bug wins and eats the smaller bugs.
+     * The biggest bug's size is increased by the size of the bugs it eats.
+     * The eaten bugs are set to dead and their eatenBy attribute is set to the id of the bug that ate them.
+     * */
     for (vector<Bug *> cell: cells) {
         if (cell.size() > 1) {
-            Bug *biggestBug = NULL;
+            Bug *biggestBug = nullptr;
             for (Bug *bug: cell) {
                 if (bug->isAlive()) {
-                    if (biggestBug == NULL || bug->getSize() > biggestBug->getSize()) {
+                    if (biggestBug == nullptr || bug->getSize() > biggestBug->getSize()) {
                         biggestBug = bug;
                     }
                 }
             }
-            if (biggestBug != NULL) {
+            if (biggestBug != nullptr) {
                 for (Bug *bug: cell) {
                     if (bug->isAlive() && bug != biggestBug) {
                         bug->setAlive(false);
@@ -370,64 +282,40 @@ void Board::tapBoard() {
     }
 }
 
-
-//5. Display Life History of all bugs
-//Display each bug’s details and the path that it travelled from beginning to death. The history will be
-//recorded in the path field (which is a chronological list of positions). (Type list must be used)
-//101 Crawler Path: (0,0),(0,1),(1,1),(2,1),(3,1) Eaten by 203
-//102 Hopper Path: (2,2),(2,3), Alive!
-//void Board::displayLifeHistoryOfAllBugs() const {
-//    for (Bug* bug : bug_vector) {
-//        std::cout << bug->getId() << " ";
-//        if (dynamic_cast<Crawler*>(bug)) {
-//            std::cout << "Crawler";
-//        } else if (dynamic_cast<Hopper*>(bug)) {
-//            std::cout << "Hopper";
-//        }
-//        std::cout << " Path: ";
-//        for (auto const& pos : bug->getPath()) {
-//            std::cout << "(" << pos.first << "," << pos.second << ")";
-//            if (&pos != &bug->getPath().back()) {
-//                std::cout << ",";
-//            }
-//        }
-//        std::cout << std::endl;
-//    }
-//}
-
 void Board::displayLifeHistoryOfAllBugs(std::ostream &out) const {
-//    for (int i = 0; i < 100; i++) {
     for (Bug *bug: bugs) {
         out << bug->getId() << " ";
         out << bug->getType() << " ";
         out << " Path: ";
-        for (auto const &pos: bug->getPath()) {
+
+        for (const std::pair<int, int> &pos : bug->getPath()) {
             out << "(" << pos.first << "," << pos.second << ")";
             if (&pos != &bug->getPath().back()) {
                 out << ",";
             }
         }
+
         // If the bug is dead, print the bug it was eaten by
         if (!bug->isAlive()) {
             out << " Eaten by " << bug->getPredator();
         }
         out << std::endl;
     }
-//    }
 }
 
-
-//6. Exit - Write the life history of all bugs to a text file called “bugs_life_history_date_time.out”
-//where date_time is the current date and time. The file should be in the same format as the
-//displayLifeHistoryOfAllBugs() function above. The file should be created in the same directory as
-//the executable.
+//method to write the life history of all the bugs to a file
+//got an idea from some code i found online from stackoverflow parent path https://stackoverflow.com/questions/143174/how-do-i-get-the-directory-that-a-program-is-running-from
+// google https://en.cppreference.com/w/cpp/filesystem/current_path
+//after i got erros from fs::path(argv[0]).parent_path() << '\n';
+//i used chat gpt to ask for help becayse i couldn't find anything online to help resolve the problem
 void Board::writeLifeHistoryOfAllBugsToFile() const {
     // Get the directory path to put the file
+    //instructions said to put the file in a relative path, so i used the parent path
     std::filesystem::path dir_path = std::filesystem::current_path().parent_path();
 
     // Get the file name for the output file
     std::string file_name = "bugs_life_history_" + utils::getCurrentDateTime() + ".out";
-    // Replace invalid characters with '_'
+    // Replace invalid characters with '_'  because Windows doesn't allow ':' in file names and i kept getting errors
     std::replace(file_name.begin(), file_name.end(), ':', '_');
     // Combine the directory path and file name to create the file path
     std::filesystem::path file_path = dir_path / file_name;
@@ -450,20 +338,16 @@ void Board::writeLifeHistoryOfAllBugsToFile() const {
 }
 
 void Board::displayAllCells() const {
-    // Loop through all possible positions on the board
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
             std::cout << "(" << i << "," << j << "): ";
             bool empty = true;
-            // Loop through all bugs on the board to check if any are in this position
-//            for (const auto &cell: cells) {
             for (Bug *bug: bugs) {
                 if (bug->getPosition() == std::make_pair(i, j) && bug->isAlive()) {
                     empty = false;
                     std::cout << bug->getType() << " " << bug->getId() << " ";
                 }
             }
-//            }
             if (empty) {
                 std::cout << "empty" << std::endl;
             } else {
@@ -490,169 +374,30 @@ void Board::simulate() {
     writeLifeHistoryOfAllBugsToFile();
 }
 
+//an extra method to count the number of bugs that are alive
 int Board::countAliveBugs() const {
     int count = 0;
-//    for (int i = 0; i < 100; i++) {
     for (Bug *bug: bugs) {
         if (bug->isAlive()) {
             count++;
         }
     }
-//    }
     return count;
 }
 
+//an extra method to find the last alive bug
 Bug *Board::findLastAliveBug() const {
-//    for (int i = 0; i < 100; i++) {
     for (Bug *bug: bugs) {
         if (bug->isAlive()) {
             return bug;
         }
     }
-//    }
     return nullptr;
 }
 
-//void Board::drawBoard() {
-//    //create a window
-//    sf::RenderWindow window(sf::VideoMode(1500, 1000), "Bug Game");
-//
-//    //create a chess board of size 10x10 using a 2D array of squares
-//    sf::RectangleShape squares[10][10];
-//
-//    //set the size of each square
-//    for (int i = 0; i < 10; i++) {
-//        for (int j = 0; j < 10; j++) {
-//            squares[i][j].setSize(sf::Vector2f(100, 100));
-//            squares[i][j].setPosition(i * 100, j * 100);
-//
-//            //set the color of each square
-//            if ((i + j) % 2 == 0) {
-//                squares[i][j].setFillColor(sf::Color::Black);
-//            } else {
-//                squares[i][j].setFillColor(sf::Color::White);
-//            }
-//        }
-//    }
-//
-//    //load the bug textures
-//    sf::Texture crawlerTexture;
-//    if (!crawlerTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/crawler2.png")) {
-//        std::cerr << "Failed to load crawler.png" << std::endl;
-//        return;
-//    }
-//
-//
-//    sf::Texture hopperTexture;
-//    if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/hopper2.png")) {
-//        std::cerr << "Failed to load hopper.png" << std::endl;
-//        return;
-//    }
-//
-//    sf::Texture bishopTexture;
-//    if (!bishopTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/bishop2.png")) {
-//        std::cerr << "Failed to load bishop.png" << std::endl;
-//        return;
-//    }
-//
-//    //create a bug sprite for each bug on the board
-//    for (auto &bug: bugs) {
-//        sf::Sprite sprite;
-//        if (dynamic_cast<Crawler *>(bug)) {
-//            sprite.setTexture(crawlerTexture);
-//        } else if (dynamic_cast<Hopper *>(bug)) {
-//            sprite.setTexture(hopperTexture);
-//        } else{
-//            sprite.setTexture(bishopTexture);
-//        }
-//
-//        //set the position of the bug sprite on the board
-//        sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
-//
-//        //draw the bug sprite on the board
-//        window.draw(sprite);
-//    }
-//
-//    // add a rectangle for menu options
-//    sf::RectangleShape menu(sf::Vector2f(500, 1000));
-//    menu.setPosition(1000, 0); // set the x-coordinate to 700
-//    menu.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
-//
-//
-//
-//    // add event loop to handle user input
-//    while (window.isOpen()) {
-//        sf::Event event;
-//        while (window.pollEvent(event)) {
-//            if (event.type == sf::Event::Closed) {
-//                window.close();
-//            }
-//                // handle left mouse button press
-//            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-//                tapBoard();
-//                // check if there is only one bug left
-//                if (countAliveBugs() == 1) {
-//                    // get the last alive bug
-//                    Bug* lastBug = findLastAliveBug();
-//                    // display "game over" and the winner's ID
-//                    sf::Font font;
-//                    if (!font.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/arial.ttf")) {
-//                        std::cerr << "Failed to load font" << std::endl;
-//                        return;
-//                    }
-//                    window.clear();
-//                    sf::Text text;
-//                    text.setFont(font);
-//                    text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
-//                    text.setCharacterSize(50);
-//                    text.setPosition(200, 200);
-//                    text.setFillColor(sf::Color::Red);
-//                    window.draw(text);
-//                    window.display();
-//
-//                    // wait for 3 seconds before closing the window
-//                    sf::sleep(sf::seconds(3));
-//                    window.close();
-//                }
-//            }
-//        }
-//
-//        window.clear();
-//
-//        for (int i = 0; i < 10; i++) {
-//            for (int j = 0; j < 10; j++) {
-//                window.draw(squares[i][j]);
-//            }
-//        }
-//
-//        window.draw(menu);
-//
-//        for (auto &bug: bugs) {
-//            sf::Sprite sprite;
-//            if(bug->isAlive()){
-//            if (dynamic_cast<Crawler *>(bug)) {
-//                sprite.setTexture(crawlerTexture);
-//                sprite.setScale(0.2, 0.2);
-////                sprite.setColor(sf::Color(255, 255, 255, 128)); // alpha value of 128 (50% transparency)
-//            } else if (dynamic_cast<Hopper *>(bug)) {
-//                sprite.setTexture(hopperTexture);
-//                sprite.setScale(0.2, 0.2);
-//            } else {
-//                sprite.setTexture(bishopTexture);
-//                sprite.setScale(0.35, 0.35);
-//            }
-//        }
-//
-//            sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
-//            window.draw(sprite);
-//        }
-//
-//        window.display();
-//    }
-//}
-
+//an extra method to check if a cell is empty in the graphics to make sure bugs don't overlap
 bool Board::isCellEmpty(int x, int y) {
-    for (auto &bug: bugs) {
+    for (Bug *bug: bugs) {
         if (bug->getPosition().first == x && bug->getPosition().second == y && bug->isAlive()) {
             return false;
         }
@@ -660,31 +405,12 @@ bool Board::isCellEmpty(int x, int y) {
     return true;
 }
 
+//got help from https://www.sfml-dev.org/tutorials/2.5/graphics-vertex-array.php, https://www.youtube.com/watch?v=_RLFI1D99Ow&t=312s&ab_channel=Zenva
 void Board::drawBoard() {
     //create a window
     sf::RenderWindow window(sf::VideoMode(1500, 1000), "Bug Game");
 
-    //create a chess board of size 10x10 using a 2D array of squares
     sf::RectangleShape squares[10][10];
-
-    //set the size of each square
-//    for (int i = 0; i < 10; i++) {
-//        for (int j = 0; j < 10; j++) {
-//            squares[i][j].setSize(sf::Vector2f(100, 100));
-//            squares[i][j].setPosition(i * 100, j * 100);
-//
-//            //set the color of each square
-//            if ((i + j) % 2 == 0) {
-//                squares[i][j].setFillColor(sf::Color::White);
-//                squares[i][j].setOutlineColor(sf::Color::Black);
-//                squares[i][j].setOutlineThickness(3);
-//            } else {
-//                squares[i][j].setFillColor(sf::Color::White);
-//                squares[i][j].setOutlineColor(sf::Color::Black);
-//                squares[i][j].setOutlineThickness(3);
-//            }
-//        }
-//    }
 
     //load the bug textures
     sf::Texture crawlerTexture;
@@ -692,7 +418,6 @@ void Board::drawBoard() {
         std::cerr << "Failed to load crawler.png" << std::endl;
         return;
     }
-
 
     sf::Texture hopperTexture;
     if (!hopperTexture.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/hopper3.png")) {
@@ -714,7 +439,7 @@ void Board::drawBoard() {
 
     //check if the superbug is already on the board
     bool superBugOnBoard = false;
-    for (auto &bug: bugs) {
+    for (Bug *bug: bugs) {
         if(bug->getType() == "SuperBug"){
             superBugOnBoard = true;
         }
@@ -728,61 +453,32 @@ void Board::drawBoard() {
     }
 
     SuperBug *superBug;
-    for (auto &bug: bugs) {
+    for (Bug *bug: bugs) {
         if(bug->getType() == "SuperBug"){
             superBug = dynamic_cast<SuperBug *>(bug);
         }
     }
-//    SuperBug *superBug = new SuperBug(001, make_pair(7,7), static_cast<Direction>(1), 20,true);
-//    bugs.push_back(superBug);
-
-    // Add the SuperBug's texture to the game
-//    sf::Sprite superBugSprite;
-//    superBugSprite.setTexture(superBugTexture);
-
-    //create a bug sprite for each bug on the board
-//    for (auto &bug: bugs) {
-//        sf::Sprite sprite;
-//        if (dynamic_cast<Crawler *>(bug)) {
-//            sprite.setTexture(crawlerTexture);
-//        } else if (dynamic_cast<Hopper *>(bug)) {
-//            sprite.setTexture(hopperTexture);
-//        } else {
-//            sprite.setTexture(bishopTexture);
-//        }
-//
-//        //set the position of the bug sprite on the board
-//        sprite.setPosition(bug->getPosition().first * 100, bug->getPosition().second * 100);
-//
-//        //draw the bug sprite on the board
-//        window.draw(sprite);
-//    }
 
     // add a rectangle for menu options
     sf::RectangleShape menu(sf::Vector2f(500, 1000));
     menu.setPosition(1000, 0); // set the x-coordinate to 700
     menu.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
 
-    // create a font for the timer text
+    // create a font for all texts
     sf::Font font;
     if (!font.loadFromFile("C:/Users/orjie/CLionProjects/bug_project/arial.ttf")) {
         std::cerr << "Failed to load font" << std::endl;
         return;
     }
 
-    // create a text object for the timer
-//    sf::Text timerText("", font, 50);
-//    timerText.setPosition(1050, 100); // set the position in the menu bar
-//    timerText.setFillColor(sf::Color::White);
-
-    // set the timer duration in seconds
+    // set the timer duration for 3 seconds
     int timerDuration = 3;
     sf::Clock clock;
     sf::Time timeElapsed = clock.getElapsedTime();
     sf::Time timeRemaining = sf::seconds(timerDuration) - timeElapsed;
-    //for rounds
 
-    //create a pomiter for the selected bug
+    //create a pomiter for the selected bug which will be used to display the bug details and also
+    //to move the selected bug IF it is the SuperBug
     Bug *selectedBug = nullptr;
 
     // create a text object to display the bug details in the menu bar
@@ -795,7 +491,6 @@ void Board::drawBoard() {
     bool isGameOver = false;
 
     while (window.isOpen()) {
-        // update time elapsed and time remaining
         if(!isGameOver) {
             timeElapsed = clock.getElapsedTime();
             timeRemaining = sf::seconds(timerDuration) - timeElapsed;
@@ -813,76 +508,14 @@ void Board::drawBoard() {
             Bug *lastBug = findLastAliveBug();
 
             isGameOver = true;
-//            window.display();
-
-            // wait for 3 seconds before closing the window
-//            sf::sleep(sf::seconds(6));
-//            //now lets make up the Won screen that displays the winner, number of rounds, all the bugs it killed
-//            //by looping through the bugs and check the EatenBy attribute of each bug and if it is the winner the add th eid as well
-//            //the size of th ebug , the current position of the bug and the direction it is facing also a picture of the bug
-//
-//            window.clear();
-//
-//            // add a rectangle for the end screen
-//            sf::RectangleShape end(sf::Vector2f(1000, 1500));
-//            end.setPosition(0, 0); // set the x-coordinate to 700
-//            end.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
-//
-//            //draw the end screen
-//            window.draw(end);
-//
-//            //draw the picture of the winner
-//            sf::Sprite winnerSprite;
-//            if (dynamic_cast<Crawler *>(lastBug)) {
-//                winnerSprite.setTexture(crawlerTexture);
-//            } else if (dynamic_cast<Hopper *>(lastBug)) {
-//                winnerSprite.setTexture(hopperTexture);
-//            } else {
-//                winnerSprite.setTexture(bishopTexture);
-//            }
-//
-//            //set the position of the bug sprite on the board
-//            winnerSprite.setPosition(500, 500);
-//
-//            //set the scale of the bug sprite
-//            winnerSprite.setScale(2, 2);
-//
-//            //draw the bug sprite on the board
-//            window.draw(winnerSprite);
-//
-//            string winner = "Bug " + std::to_string(lastBug->getId()) + " wins!";
-//            winner += "Killed Bugs: ";
-//            for (auto &bug: bugs) {
-//                if (bug->getPredator() == lastBug->getId()) {
-//                    winner += std::to_string(bug->getId()) + ", ";
-//                }
-//            }
-//            winner += "Size: " + std::to_string(lastBug->getSize());
-//            winner += "Current Position: " + std::to_string(lastBug->getPosition().first) + ", " +
-//                      std::to_string(lastBug->getPosition().second);
-//
-//            winner += "Direction: " + std::to_string(lastBug->getDirection());
-//
-//            winner += "Number of Rounds: " + std::to_string(round);
-//
-//            //draw the text
-//            sf::Text winnerText;
-//            winnerText.setFont(font);
-//            winnerText.setString(winner);
-//            winnerText.setCharacterSize(50);
-//            winnerText.setPosition(700, 200);
-//
-//            window.draw(winnerText);
-//
-//            window.display();
-//            window.close();
         }
+
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
-                // handle left mouse button press
+                // handle left mouse button press event which will be used to tap the board
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 tapBoard();
                 rounds++;
@@ -890,14 +523,14 @@ void Board::drawBoard() {
             }
 
             //to add an event when the user right clicks the board and a bug is in that position it
-            //displays the details of that bug
+            //displays the details of that bug in the menu bar  or deselects the bug if it is already selected
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 int x = mousePos.x;
                 int y = mousePos.y;
                 int xSquare = x / 100;
                 int ySquare = y / 100;
-                for (auto &bug: bugs) {
+                for (Bug *bug: bugs) {
                     if (bug->isAlive()) {
                         if (bug->getPosition().first == xSquare && bug->getPosition().second == ySquare) {
                             if (selectedBug == bug) {
@@ -911,19 +544,15 @@ void Board::drawBoard() {
             }
 
             // Move the SuperBug based on user input
+            //also added check to make sure that the superbug does not move out of the board
+            //and also does not move to a cell that is occupied by another bug
             if (selectedBug == superBug) {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
                     if (superBug->getPosition().first > 0) { // check if not at left edge
-                        //firsrt chexk if the cell the bug is moving to is empty
-                        //if it is not empty teh bug cannot move
-                        //subtract 1 from the x coordinate and check if there is a bug in that position
-                        //if there is a bug in that position then the bug cannot move
                         if (isCellEmpty(superBug->getPosition().first - 1, superBug->getPosition().second)) {
                             superBug->move();
                             superBug->setDirection(West);
                         }
-//                        superBug->move();
-//                        superBug->setDirection(West);
                     }
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
                     if (superBug->getPosition().first < 9) { // check if not at right edge
@@ -931,8 +560,6 @@ void Board::drawBoard() {
                             superBug->move();
                             superBug->setDirection(East);
                         }
-//                        superBug->move();
-//                        superBug->setDirection(East);
                     }
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
                     if (superBug->getPosition().second > 0) { // check if not at top edge
@@ -940,8 +567,6 @@ void Board::drawBoard() {
                             superBug->move();
                             superBug->setDirection(North);
                         }
-//                        superBug->move();
-//                        superBug->setDirection(North);
                     }
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
                     if (superBug->getPosition().second < 9) { // check if not at bottom edge
@@ -949,8 +574,6 @@ void Board::drawBoard() {
                             superBug->move();
                             superBug->setDirection(South);
                         }
-//                        superBug->move();
-//                        superBug->setDirection(South);
                     }
                 }
             }
@@ -958,25 +581,15 @@ void Board::drawBoard() {
 
         window.clear();
 
-// draw the squares on the board
-//        for (int i = 0; i < 10; i++) {
-//            for (int j = 0; j < 10; j++) {
-//                window.draw(squares[i][j]);
-//            }
-//        }
+        //draw the board
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 squares[i][j].setSize(sf::Vector2f(100, 100));
                 squares[i][j].setPosition(i * 100, j * 100);
-                if ((i + j) % 2 == 0) {
-                    squares[i][j].setFillColor(sf::Color::White);
-                    squares[i][j].setOutlineColor(sf::Color::Black);
-                    squares[i][j].setOutlineThickness(3);
-                } else {
-                    squares[i][j].setFillColor(sf::Color::White);
-                    squares[i][j].setOutlineColor(sf::Color::Black);
-                    squares[i][j].setOutlineThickness(3);
-                }
+
+                squares[i][j].setFillColor(sf::Color::White);
+                squares[i][j].setOutlineColor(sf::Color::Black);
+                squares[i][j].setOutlineThickness(3);
                 // add this if-statement to check if the current square is the selected one
                 if (selectedBug != nullptr && i == selectedBug->getPosition().first &&
                     j == selectedBug->getPosition().second) {
@@ -990,33 +603,31 @@ void Board::drawBoard() {
             }
         }
 
-
-
 // draw the menu bar
         window.draw(menu);
 
-// draw the bugs on the board
-        for (auto &bug: bugs) {
+/* The following code is used to draw the bugs on the board.
+ * It loops through the bugs vector and draws the bugs that are alive.
+ * It also checks the type of the bug and draws the appropriate texture.
+ * and also rotates the bug based on its direction
+ * and also scales the bug based on its size
+ * */
+        for (Bug *bug: bugs) {
             sf::Sprite sprite;
             float offsetX = 0;
             float offsetY = 0;
             if (bug->isAlive()) {
-
-
                 if (bug->getType() == "Crawler") {
                     sprite.setTexture(crawlerTexture);
-
                     rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 85) {
                         sprite.setScale(0.222, 0.222);
                         offsetX *= 0.222;
                         offsetY *= 0.222;
-
                     } else {
                         sprite.setScale(0.08 + 0.00118 * bug->getSize(), 0.08 + 0.00118 * bug->getSize());
                         offsetX *= 0.08 + 0.00118 * bug->getSize();
                         offsetY *= 0.08 + 0.00118 * bug->getSize();
-
                     }
                 } else if (bug->getType() == "Hopper") {
                     sprite.setTexture(hopperTexture);
@@ -1029,7 +640,6 @@ void Board::drawBoard() {
                         sprite.setScale(0.08 + 0.00094 * bug->getSize(), 0.08 + 0.00094 * bug->getSize());
                         offsetX *= 0.08 + 0.00094 * bug->getSize();
                         offsetY *= 0.08 + 0.00094 * bug->getSize();
-
                     }
                 } else if (bug->getType() == "Bishop") {
                     sprite.setTexture(bishopTexture);
@@ -1057,7 +667,6 @@ void Board::drawBoard() {
                     }
                 }
 
-
                 // Add a text object for the bug size
                 sf::Text sizeText;
                 sizeText.setFont(font);
@@ -1066,20 +675,9 @@ void Board::drawBoard() {
                 sizeText.setPosition(bug->getPosition().first * 100 + 35, bug->getPosition().second * 100 + 55);
                 sizeText.setFillColor(sf::Color::Red);
                 window.draw(sizeText);
-
-                //so now we want the bugs direction to be the direction they are facing
-                //so we need to get the direction of the bug
-                //then we need to rotate the sprite to face that direction
-                //then we need to draw the sprite
-
             }
 
             sprite.setPosition((bug->getPosition().first * 100) + offsetX, (bug->getPosition().second * 100) + offsetY);
-            // Draw the SuperBug on the board
-//            if (superBug->isAlive()) {
-//                superBugSprite.setPosition((bug->getPosition().first * 100)+offsetX, (bug->getPosition().second * 100)+offsetY);
-//                window.draw(superBugSprite);
-//            }
             window.draw(sprite);
         }
 
@@ -1117,15 +715,6 @@ void Board::drawBoard() {
         if (selectedBug != nullptr && selectedBug->isAlive()) {
             std::string details = "Type: ";
             details += selectedBug->getType() + "\n";
-//            if (dynamic_cast<Crawler *>(selectedBug)) {
-//                details += "Crawler\n";
-//            } else if (dynamic_cast<Hopper *>(selectedBug)) {
-//                details += "Hopper\n";
-//            } else if (dynamic_cast<Bishop *>(selectedBug)) {
-//                details += "Bishop\n";
-//            } else {
-//                details += "SuperBug\n";
-//            }
             details += "ID: " + std::to_string(selectedBug->getId()) + "\n";
             details += "Size: " + std::to_string(selectedBug->getSize()) + "\n";
             details += "Direction: " + std::to_string(selectedBug->getDirection()) + "\n";
@@ -1134,7 +723,6 @@ void Board::drawBoard() {
             bugDetails.setString(details);
             window.draw(bugDetails);
         } else if (selectedBug != nullptr && !selectedBug->isAlive()) {
-            //bug (101) is dead
             bugDetails.setString("Bug (" + std::to_string(selectedBug->getId()) + ") is dead");
             window.draw(bugDetails);
         } else {
@@ -1142,39 +730,22 @@ void Board::drawBoard() {
             window.draw(bugDetails);
         }
 
-
         // draw the bug details in the menu bar
         window.draw(bugDetails);
 
-        //when the bug is selected also drow an imahe of the bug in the menu bar right under the bug details
-        //so we need to get the bug type
-        //then we need to get the bug size
-        //then we need to get the bug direction
-        //then we need to draw the bug in the menu bar
-        //then we need to rotate the bug to face the direction it is facing
-        //then we need to scale the bug to the size it is
-        //then we need to draw the bug in the menu bar
         if (selectedBug != nullptr && selectedBug->isAlive()) {
             //get the bug type
             sf::Sprite sprite;
             if (selectedBug->getType() == "Crawler") {
-                //draw the crawler in the menu bar
-                //set the texture of the sprite
                 sprite.setTexture(crawlerTexture);
                 sprite.setScale(0.7, 0.7);
             } else if (selectedBug->getType() == "Hopper") {
-                //draw the hopper in the menu bar
-                //set the texture of the sprite
                 sprite.setTexture(hopperTexture);
                 sprite.setScale(0.7, 0.7);
             } else if (selectedBug->getType() == "Bishop") {
-                //draw the bishop in the menu bar
-                //set the texture of the sprite
                 sprite.setTexture(bishopTexture);
                 sprite.setScale(1, 1);
             } else {
-                //draw the superbug in the menu bar
-                //set the texture of the sprite
                 sprite.setTexture(superBugTexture);
                 sprite.setScale(1, 1);
             }
@@ -1200,7 +771,6 @@ void Board::drawBoard() {
             winnerSprite.setTexture(superBugTexture);
         }
 
-
         if(!isGameOver){
             window.display();
         }
@@ -1214,7 +784,6 @@ void Board::drawBoard() {
             text.setFillColor(sf::Color::Red);
 
             window.draw(text);
-
             // wait for 5 seconds
             if(clock.getElapsedTime().asSeconds() > 5) {
                 window.clear();
@@ -1232,7 +801,7 @@ void Board::drawBoard() {
 
                 string winner = "Bug " + std::to_string(lastBug->getId()) + " wins!\n";
                 winner += "Killed Bugs: ";
-                for (auto &bug: bugs) {
+                for (Bug *bug: bugs) {
                     if (bug->getPredator() == lastBug->getId()) {
                         winner += std::to_string(bug->getId()) + ", ";
                     }
@@ -1259,6 +828,8 @@ void Board::drawBoard() {
     }
 }
 
+/* Rotate the bug sprite based on the direction of the bug
+ * */
 void Board::rotate(Bug *const &bug, sf::Sprite &sprite, float &offsetX, float &offsetY) const {
     offsetX = sprite.getLocalBounds().width / 2;
     offsetY = sprite.getLocalBounds().height / 2;
@@ -1289,14 +860,10 @@ void Board::rotate(Bug *const &bug, sf::Sprite &sprite, float &offsetX, float &o
             sprite.setRotation(135);
             break;
     }
-//    sprite.setOrigin(0,0);
-//    sprite.move(offsetX, offsetY);
 }
-
 
 //destructors
 Board::~Board() {
-    //    std::vector <Bug*> cells[99];
     for(Bug *bug: bugs){
         delete bug;
     }

@@ -27,24 +27,13 @@ void Bishop::setBisLength(int b) {
     Bishop::bisLength = b;
 }
 
-//int bisLength; The distance/length that a particular bishop bug can bis (in
-//range (1-6 units)
-//void move(){} A Bishop bug moves according to these rules:
-//- moves by “bisLength” units in current direction
-//- if at edge of board and can’t move over edge in
-//current direction, set a new direction at random
-//(repeat until bug can move forward) and then
-//move.
-//- if bug can’t bis the full ‘bisLength’, then the bug
-//does move but ‘hits’ the edge and falls on the
-//square where it hit the edge/wall
-//- record new position in bishops path history
-//note that the bishop can only move diagonally
-/* This function implements the movement of a bishop on a chessboard. The bishop moves
- * diagonally on the board, and if it is blocked in its current direction, it randomly
- * sets a new direction to move. The maximum distance the bishop can hop in the current
- * direction is calculated and then the bishop moves the full distance if possible, or to
- * the edge of the board if not. This implementation is based on the rules of movement for a bishop in chess. */
+/*This move method is similar to the move method in the Crawler class
+ * The bishop can only move diagonally and the maximum distance
+ * it can hop in the current direction is the minimum of the distance to the edge of the board
+ * in the x and y direction (note that the board is 10x10)
+ * If the bishop can hop the full distance, move it and update its position
+ * If the bishop can't hop the full distance, move it to the edge of the board and update its position
+ * */
 void Bishop::move() {
     //if the bug is at the edge of the board and can't move in the current direction, set a new direction at random
     while (isWayBlocked()) {
@@ -121,8 +110,6 @@ void Bishop::move() {
     setPath(currentPath);
 }
 
-//display the bug's information
-//102 Bishop (5,8) 13 NorthEast 4 Alive
 void Bishop::displayBug() {
     std::cout << getId() << " Bishop (" << getPosition().first << "," << getPosition().second << ") " << getSize()
               << " ";

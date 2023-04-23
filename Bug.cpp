@@ -34,8 +34,6 @@ void Bug::setId(int d) {
     Bug::id = d;
 }
 
-//Co-ordinate pair (x,y) represented in a ‘pair’ struct from
-//<utility> standard library. (0,0) is top left cell on board.
 const std::pair<int, int> &Bug::getPosition() const {
     return position;
 }
@@ -54,9 +52,6 @@ void Bug::setDirection(Direction d) {
     Bug::direction = d;
 }
 
-//Size of the bug (initially 1-20); biggest bug wins in a fight
-//and others on same cell are eaten. Winner grows during a
-//fight by the sum of the sizes of other bugs eaten.
 int Bug::getSize() const {
     return size;
 }
@@ -76,9 +71,6 @@ void Bug::setAlive(bool a) {
     Bug::alive = a;
 }
 
-//Path taken by a bug. (i.e. the List of positions (on grid) that a
-//bug visited.)
-//    const std::list<std::pair<int, int>> &getPath() const;
 const std::list<std::pair<int, int>> & Bug::getPath() const {
     return path;
 }
@@ -92,10 +84,6 @@ void Bug::addPath(const std::pair<int, int>& position) {
     path.push_back(position);
 }
 
-// //to get and set the eaten by
-//    std::string getPredator() const;
-//
-//    void setEatenBy(std::string predator);
 int Bug::getPredator() const {
     return predator;
 }
@@ -152,13 +140,6 @@ bool Bug::isWayBlocked() {
 
     return wayBlocked;
 }
-
-//Moves the bug one cell in the direction it is facing.
-//If the bug is against an edge of the board AND if it is
-//facing in the direction of that edge, then, set a new
-//direction at random. (Repeat until bug can move forward).
-//Record new position in the bug's path history.
-//    void move();
 
 //the virtual destructor
 Bug::~Bug() {

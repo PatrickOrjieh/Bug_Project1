@@ -102,8 +102,6 @@ void Hopper::move() {
     addPath(currentPosition);
 }
 
-//display the bug's information
-//102 Hopper (5,8) 13 North 4 Alive
 void Hopper::displayBug() {
     std::cout << getId() << " Hopper (" << getPosition().first << "," << getPosition().second << ") " << getSize() << " ";
     switch (getDirection()) {
