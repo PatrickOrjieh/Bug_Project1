@@ -650,7 +650,7 @@ Bug *Board::findLastAliveBug() const {
 
 bool Board::isCellEmpty(int x, int y) {
     for (auto &bug: bugs) {
-        if (bug->getPosition().first == x && bug->getPosition().second == y) {
+        if (bug->getPosition().first == x && bug->getPosition().second == y && bug->isAlive()) {
             return false;
         }
     }
@@ -789,16 +789,17 @@ void Board::drawBoard() {
     bugDetails.setPosition(1020, 200); // set the position in the menu bar
     bugDetails.setFillColor(sf::Color::Black);
 
-    sf::Text text;
-
+    bool isGameOver = false;
 
     while (window.isOpen()) {
         // update time elapsed and time remaining
-        timeElapsed = clock.getElapsedTime();
-        timeRemaining = sf::seconds(timerDuration) - timeElapsed;
+        if(!isGameOver) {
+            timeElapsed = clock.getElapsedTime();
+            timeRemaining = sf::seconds(timerDuration) - timeElapsed;
+        }
 
         // check if time is up
-        if (timeRemaining.asSeconds() <= 0) {
+        if (!isGameOver && timeRemaining.asSeconds() <= 0) {
             tapBoard();
             round++;
             clock.restart();
@@ -807,16 +808,70 @@ void Board::drawBoard() {
         if (countAliveBugs() == 1) {
             // get the last alive bug
             Bug *lastBug = findLastAliveBug();
-            // display "game over" and the winner's ID
-            text.setFont(font);
-            text.setString("Game over! Bug " + std::to_string(lastBug->getId()) + " wins!");
-            text.setCharacterSize(50);
-            text.setPosition(200, 200);
-            text.setFillColor(sf::Color::Red);
+
+            isGameOver = true;
 //            window.display();
 
             // wait for 3 seconds before closing the window
 //            sf::sleep(sf::seconds(6));
+//            //now lets make up the Won screen that displays the winner, number of rounds, all the bugs it killed
+//            //by looping through the bugs and check the EatenBy attribute of each bug and if it is the winner the add th eid as well
+//            //the size of th ebug , the current position of the bug and the direction it is facing also a picture of the bug
+//
+//            window.clear();
+//
+//            // add a rectangle for the end screen
+//            sf::RectangleShape end(sf::Vector2f(1000, 1500));
+//            end.setPosition(0, 0); // set the x-coordinate to 700
+//            end.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
+//
+//            //draw the end screen
+//            window.draw(end);
+//
+//            //draw the picture of the winner
+//            sf::Sprite winnerSprite;
+//            if (dynamic_cast<Crawler *>(lastBug)) {
+//                winnerSprite.setTexture(crawlerTexture);
+//            } else if (dynamic_cast<Hopper *>(lastBug)) {
+//                winnerSprite.setTexture(hopperTexture);
+//            } else {
+//                winnerSprite.setTexture(bishopTexture);
+//            }
+//
+//            //set the position of the bug sprite on the board
+//            winnerSprite.setPosition(500, 500);
+//
+//            //set the scale of the bug sprite
+//            winnerSprite.setScale(2, 2);
+//
+//            //draw the bug sprite on the board
+//            window.draw(winnerSprite);
+//
+//            string winner = "Bug " + std::to_string(lastBug->getId()) + " wins!";
+//            winner += "Killed Bugs: ";
+//            for (auto &bug: bugs) {
+//                if (bug->getPredator() == lastBug->getId()) {
+//                    winner += std::to_string(bug->getId()) + ", ";
+//                }
+//            }
+//            winner += "Size: " + std::to_string(lastBug->getSize());
+//            winner += "Current Position: " + std::to_string(lastBug->getPosition().first) + ", " +
+//                      std::to_string(lastBug->getPosition().second);
+//
+//            winner += "Direction: " + std::to_string(lastBug->getDirection());
+//
+//            winner += "Number of Rounds: " + std::to_string(round);
+//
+//            //draw the text
+//            sf::Text winnerText;
+//            winnerText.setFont(font);
+//            winnerText.setString(winner);
+//            winnerText.setCharacterSize(50);
+//            winnerText.setPosition(700, 200);
+//
+//            window.draw(winnerText);
+//
+//            window.display();
 //            window.close();
         }
         sf::Event event;
@@ -920,10 +975,11 @@ void Board::drawBoard() {
                     squares[i][j].setOutlineThickness(3);
                 }
                 // add this if-statement to check if the current square is the selected one
-                if (selectedBug != nullptr && i == selectedBug->getPosition().first && j == selectedBug->getPosition().second) {
-                    if(selectedBug->isAlive()){
+                if (selectedBug != nullptr && i == selectedBug->getPosition().first &&
+                    j == selectedBug->getPosition().second) {
+                    if (selectedBug->isAlive()) {
                         squares[i][j].setFillColor(sf::Color::Green);
-                    }else{
+                    } else {
                         squares[i][j].setFillColor(sf::Color::White);
                     }
                 }
@@ -939,10 +995,9 @@ void Board::drawBoard() {
 // draw the bugs on the board
         for (auto &bug: bugs) {
             sf::Sprite sprite;
-            float offsetX=0;
-            float offsetY=0;
+            float offsetX = 0;
+            float offsetY = 0;
             if (bug->isAlive()) {
-
 
 
                 if (dynamic_cast<Crawler *>(bug)) {
@@ -985,8 +1040,7 @@ void Board::drawBoard() {
                         offsetX *= 0.08 + 0.00094 * bug->getSize();
                         offsetY *= 0.08 + 0.00094 * bug->getSize();
                     }
-                }
-                else{
+                } else {
                     sprite.setTexture(superBugTexture);
                     rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 118) {
@@ -1017,7 +1071,7 @@ void Board::drawBoard() {
 
             }
 
-            sprite.setPosition((bug->getPosition().first * 100)+offsetX, (bug->getPosition().second * 100)+offsetY);
+            sprite.setPosition((bug->getPosition().first * 100) + offsetX, (bug->getPosition().second * 100) + offsetY);
             // Draw the SuperBug on the board
 //            if (superBug->isAlive()) {
 //                superBugSprite.setPosition((bug->getPosition().first * 100)+offsetX, (bug->getPosition().second * 100)+offsetY);
@@ -1059,29 +1113,27 @@ void Board::drawBoard() {
         // set the bug details text
         if (selectedBug != nullptr && selectedBug->isAlive()) {
             std::string details = "Type: ";
-            if (dynamic_cast<Crawler*>(selectedBug)) {
+            if (dynamic_cast<Crawler *>(selectedBug)) {
                 details += "Crawler\n";
-            } else if (dynamic_cast<Hopper*>(selectedBug)) {
+            } else if (dynamic_cast<Hopper *>(selectedBug)) {
                 details += "Hopper\n";
-            } else if (dynamic_cast<Bishop*>(selectedBug)){
+            } else if (dynamic_cast<Bishop *>(selectedBug)) {
                 details += "Bishop\n";
-            }
-            else{
+            } else {
                 details += "SuperBug\n";
             }
             details += "ID: " + std::to_string(selectedBug->getId()) + "\n";
             details += "Size: " + std::to_string(selectedBug->getSize()) + "\n";
             details += "Direction: " + std::to_string(selectedBug->getDirection()) + "\n";
-            details += "Position: (" + std::to_string(selectedBug->getPosition().first) + ", " + std::to_string(selectedBug->getPosition().second) + ")\n";
+            details += "Position: (" + std::to_string(selectedBug->getPosition().first) + ", " +
+                       std::to_string(selectedBug->getPosition().second) + ")\n";
             bugDetails.setString(details);
             window.draw(bugDetails);
-        }
-        else if (selectedBug != nullptr && !selectedBug->isAlive()) {
+        } else if (selectedBug != nullptr && !selectedBug->isAlive()) {
             //bug (101) is dead
             bugDetails.setString("Bug (" + std::to_string(selectedBug->getId()) + ") is dead");
             window.draw(bugDetails);
-        }
-        else{
+        } else {
             bugDetails.setString("No bug selected");
             window.draw(bugDetails);
         }
@@ -1090,10 +1142,116 @@ void Board::drawBoard() {
         // draw the bug details in the menu bar
         window.draw(bugDetails);
 
-        window.draw(text);
+        //when the bug is selected also drow an imahe of the bug in the menu bar right under the bug details
+        //so we need to get the bug type
+        //then we need to get the bug size
+        //then we need to get the bug direction
+        //then we need to draw the bug in the menu bar
+        //then we need to rotate the bug to face the direction it is facing
+        //then we need to scale the bug to the size it is
+        //then we need to draw the bug in the menu bar
+        if (selectedBug != nullptr && selectedBug->isAlive()) {
+            //get the bug type
+            sf::Sprite sprite;
+            if (dynamic_cast<Crawler *>(selectedBug)) {
+                //draw the crawler in the menu bar
+                //set the texture of the sprite
+                sprite.setTexture(crawlerTexture);
+                sprite.setScale(0.7, 0.7);
+            } else if (dynamic_cast<Hopper *>(selectedBug)) {
+                //draw the hopper in the menu bar
+                //set the texture of the sprite
+                sprite.setTexture(hopperTexture);
+                sprite.setScale(0.7, 0.7);
+            } else if (dynamic_cast<Bishop *>(selectedBug)) {
+                //draw the bishop in the menu bar
+                //set the texture of the sprite
+                sprite.setTexture(bishopTexture);
+                sprite.setScale(1, 1);
+            } else {
+                //draw the superbug in the menu bar
+                //set the texture of the sprite
+                sprite.setTexture(superBugTexture);
+                sprite.setScale(1, 1);
+            }
+            sprite.setPosition(1120, 500);
+            window.draw(sprite);
+        }
+
+        // add a rectangle for the end screen
+        sf::RectangleShape end(sf::Vector2f(1000, 1500));
+        end.setPosition(0, 0); // set the x-coordinate to 700
+        end.setFillColor(sf::Color(128, 128, 128, 255)); // set the color to gray
+
+        Bug *lastBug = findLastAliveBug();
+        //draw the picture of the winner
+        sf::Sprite winnerSprite;
+        if (dynamic_cast<Crawler *>(lastBug)) {
+            winnerSprite.setTexture(crawlerTexture);
+        } else if (dynamic_cast<Hopper *>(lastBug)) {
+            winnerSprite.setTexture(hopperTexture);
+        } else if (dynamic_cast<Bishop *>(lastBug)){
+            winnerSprite.setTexture(bishopTexture);
+        }else{
+            winnerSprite.setTexture(superBugTexture);
+        }
 
 
-        window.display();
+        if(!isGameOver){
+            window.display();
+        }
+        else{
+            // display "game over" and the winner's ID
+            sf::Text text;
+            text.setFont(font);
+            text.setString("Game over!");
+            text.setCharacterSize(50);
+            text.setPosition(200, 200);
+            text.setFillColor(sf::Color::Red);
+
+            window.draw(text);
+
+            // wait for 5 seconds
+            if(clock.getElapsedTime().asSeconds() > 5) {
+                window.clear();
+                //draw the end screen
+                window.draw(end);
+
+                //set the position of the bug sprite on the board
+                winnerSprite.setPosition(100, 100);
+
+                //set the scale of the bug sprite
+                winnerSprite.setScale(2, 2);
+
+                //draw the bug sprite on the board
+                window.draw(winnerSprite);
+
+                string winner = "Bug " + std::to_string(lastBug->getId()) + " wins!\n";
+                winner += "Killed Bugs: ";
+                for (auto &bug: bugs) {
+                    if (bug->getPredator() == lastBug->getId()) {
+                        winner += std::to_string(bug->getId()) + ", ";
+                    }
+                }
+                winner += "\nSize: " + std::to_string(lastBug->getSize());
+                winner += "\nCurrent Position: " + std::to_string(lastBug->getPosition().first) + ", " +
+                          std::to_string(lastBug->getPosition().second);
+
+                winner += "\nDirection: " + std::to_string(lastBug->getDirection());
+
+                winner += "\nNumber of Rounds: " + std::to_string(round);
+
+                //draw the text
+                sf::Text winnerText;
+                winnerText.setFont(font);
+                winnerText.setString(winner);
+                winnerText.setCharacterSize(50);
+                winnerText.setPosition(700, 200);
+
+                window.draw(winnerText);
+            }
+            window.display();
+        }
     }
 }
 
