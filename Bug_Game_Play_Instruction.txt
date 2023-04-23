@@ -1,0 +1,21 @@
+This Text file contains the main Instructions that is used to run the Bugs Game Graphics.
+
+Note: All instructions are specific to the (Patrick Orjieh) Bugs Game alone.
+
+1) After the initial start of the game from the menu, to access the Graphics Menu, press the "8" key on the keyboard.
+2) The Graphics Menu will appear, there is a board which shows all the bugs in it and beside it is the menu system
+which dusplays the number of rounds and the count down for the tap baord method.
+3) When you Left click on the tap board, the tap method is called which calls the move for all thebugs in the board.
+and the fight/eat is also implemented.
+4) I have a right click function implemented but this has no effect on the board it is used to select a bug which
+shows the details of the bug on the menu, but when you right click on the super bug the details will appear and you
+can also move the super bug with the arrow keys.
+up - move up
+down - move down
+left - move left
+right - move right
+5) After rounds has being played the game ends when there is only one bug left on the board.
+and then the game will display the winner bug and the details of the bug. and all the bugs eaten by the super bug.
+6) You can also exit the game from the Graphics by closing the window.
+7) The game also has a text based menu which is used to run the game.
+8) The text based menu is used to run the game and the graphics menu is used to view the game.

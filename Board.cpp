@@ -406,6 +406,9 @@ bool Board::isCellEmpty(int x, int y) {
 }
 
 //got help from https://www.sfml-dev.org/tutorials/2.5/graphics-vertex-array.php, https://www.youtube.com/watch?v=_RLFI1D99Ow&t=312s&ab_channel=Zenva
+//used the code from the sfml tutorial to create the board and the code from the youtube video to create the bugs
+//everything else was pretty much straight forward, if i get an error i will just try it another way and
+// eventually i understand the scope behind it and it became easier
 void Board::drawBoard() {
     //create a window
     sf::RenderWindow window(sf::VideoMode(1500, 1000), "Bug Game");
