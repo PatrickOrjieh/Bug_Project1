@@ -45,7 +45,7 @@ public:
     Board();
 
     //methos ot initialise the board from a text file that has the bug data
-    void initialiseBoard(const std::string& filename);
+    bool initialiseBoard(const std::string& filename);
 
     //bool Board::isValidBugData(const std::string& bugType, const std::string& bugIdStr, const std::string& bugXStr, const std::string& bugYStr, const std::string& directionStr, const std::string& sizeStr, const std::string& hopLengthStr) const {
     bool isValidBugData(const std::string& bugType, const std::string& bugIdStr, const std::string& bugXStr, const std::string& bugYStr, const std::string& directionStr, const std::string& sizeStr, const std::string& hopLengthStr, const std::string& bishopLengthStr) const;

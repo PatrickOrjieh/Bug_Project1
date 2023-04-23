@@ -42,13 +42,14 @@ Board::Board() {
 //the position is valid and that the bug is not already in that position. for all parts do proper error handling and error checking
 //new bug type is bishop and it moves in a diagonal direction and direction is 5/6/7/8 and the bishop can only move 1 -6 cells
 // This function initializes the board by reading bug data from a file and creating bugs on the board. The file name is passed as an argument to the function.
-void Board::initialiseBoard(const std::string &filename) {
+bool Board::initialiseBoard(const std::string &filename) {
+    bool done = false;
     std::ifstream file(filename);
     //The function first opens the file and checks if it is open.
     // If it is not open, an error message is displayed and the function returns
     if (!file.is_open()) {
         std::cout << "Error: File not found" << std::endl;
-        return;
+        return false;
     }
     //The function then reads each line from the file and extracts the bug data from each line using a stringstream.
     std::string line;
@@ -99,6 +100,10 @@ void Board::initialiseBoard(const std::string &filename) {
             createCrawlerBug(bugId, bugX, bugY, direction, size);
         }
     }
+    if(!isBoardEmpty()){
+        done = true;
+    }
+    return done;
 }
 
 
@@ -322,6 +327,11 @@ void Board::findBugById() const {
 //}
 
 void Board::tapBoard() {
+    if(countAliveBugs() == 1) {
+        Bug *lastBug = findLastAliveBug();
+        std::cout << "Last bug standing is bug " << lastBug->getId() << " at (" << lastBug->getPosition().first << "," << lastBug->getPosition().second << ")" << std::endl;
+        return;
+    }
     for (Bug *bug: bugs) {
         if (bug->isAlive()) {
             int oldPosition = bug->getPosition().second * BOARD_SIZE + bug->getPosition().first;
@@ -1287,11 +1297,7 @@ void Board::rotate(Bug *const &bug, sf::Sprite &sprite, float &offsetX, float &o
 //destructors
 Board::~Board() {
     //    std::vector <Bug*> cells[99];
-    for (int i = 0; i < 100; i++) {
-        //using an iterator to delete the bugs
-        for (std::vector<Bug *>::iterator it = cells[i].begin(); it != cells[i].end(); ++it) {
-            delete *it;
-            cout << "deleting bug" << endl;
-        }
+    for(Bug *bug: bugs){
+        delete bug;
     }
 }

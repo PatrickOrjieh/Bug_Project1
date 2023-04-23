@@ -9,8 +9,16 @@ void printMenu();
 
 int main() {
     Board board;
-    string filename = utils::readString("Please enter the name of the file to read the bug data from: ");
-    board.initialiseBoard(filename);
+    while(true){
+        string filename = utils::readString("Please enter the name of the file to read the bug data from: ");
+        bool isFileValid = board.initialiseBoard(filename);
+        if(isFileValid){
+            break;
+        }
+        cout << "File is Invalid or No Bug was created from the File" << endl;
+    }
+//    string filename = utils::readString("Please enter the name of the file to read the bug data from: ");
+//    board.initialiseBoard(filename);
 
     while(true){
         printMenu();
@@ -18,11 +26,11 @@ int main() {
         switch(choice){
             case 1:
                 cout << "Displaying all the bugs on the board" << endl;
-                if(board.isBoardEmpty()){
-                    cout << "There are no bugs on the board" << endl;
-                } else {
-                    board.displayAllBugs();
-                }
+//                if(board.isBoardEmpty()){
+//                    cout << "There are no bugs on the board" << endl;
+//                } else {
+                board.displayAllBugs();
+//                }
                 break;
             case 2:
                 cout << "Finding a bug by id" << endl;
@@ -46,13 +54,7 @@ int main() {
                 break;
             case 7:
                 cout << "Running simulation" << endl;
-                while(true){
-                    board.simulate();
-                    int choice = utils::readInt("Press (1) to stop simulation At Anytime : ");
-                    if(choice == 1){
-                        break;
-                    }
-                }
+                board.simulate();
                 break;
             case 8:
                 board.drawBoard();
@@ -83,7 +85,7 @@ void printMenu() {
     //display all cells
     std::cout << "6. Display all cells" << std::endl;
     //run simulation
-    std::cout << "7. Run simulation" << std::endl;
+    std::cout << "7. Run simulation Without Graphics" << std::endl;
     //draw board
     std::cout << "8. Play board GUI" << std::endl;
 }
