@@ -40,6 +40,9 @@ protected:
     //will keep a variable called predator to know the bug that ate the others
     int predator;
 
+    //string to store the type of the bug
+    std::string type;
+
 public:
     //default constructor
     Bug();
@@ -73,6 +76,11 @@ public:
     void setPath(const std::list<std::pair<int, int>>& path);
 
     void addPath(const std::pair<int, int>& position);
+
+    //get and set the type of the bug
+    std::string getType() const;
+
+    void setType(const std::string& type);
 
     //to get and set the eaten by
     int getPredator() const;

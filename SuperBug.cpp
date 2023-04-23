@@ -119,6 +119,7 @@ SuperBug::SuperBug(int id, std::pair<int, int> position, Direction direction, in
 //record new position in the superbug's path history
 //note that board size is 10x10
 void SuperBug::move() {
+    std::pair<int, int> currentPosition = getPosition();
     int x = position.first;
     int y = position.second;
     if (x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
@@ -141,6 +142,7 @@ void SuperBug::move() {
             position.second += 1;
         }
     }
+    addPath(currentPosition);
 }
 
 void SuperBug::displayBug() {

@@ -103,6 +103,16 @@ int Bug::getPredator() const {
 void Bug::setEatenBy(const int& p) {
     Bug::predator = p;
 }
+
+//getter and setter for bug type
+std::string Bug::getType() const {
+    return type;
+}
+
+void Bug::setType(const std::string& t) {
+    Bug::type = t;
+}
+
 //Checks if a bug is against an edge of the board AND if it is
 //facing in the direction of that edge. If so, its way is blocked.
 //[Used by the move() function], board is siz2 10x10

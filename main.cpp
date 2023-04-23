@@ -18,11 +18,11 @@ int main() {
         switch(choice){
             case 1:
                 cout << "Displaying all the bugs on the board" << endl;
-//                if(board.isBoardEmpty()){
-//                    cout << "There are no bugs on the board" << endl;
-//                } else {
-                board.displayAllBugs();
-//                }
+                if(board.isBoardEmpty()){
+                    cout << "There are no bugs on the board" << endl;
+                } else {
+                    board.displayAllBugs();
+                }
                 break;
             case 2:
                 cout << "Finding a bug by id" << endl;
@@ -46,14 +46,19 @@ int main() {
                 break;
             case 7:
                 cout << "Running simulation" << endl;
-                board.simulate();
-                return 0;
+                while(true){
+                    board.simulate();
+                    int choice = utils::readInt("Press (1) to stop simulation At Anytime : ");
+                    if(choice == 1){
+                        break;
+                    }
+                }
                 break;
             case 8:
                 board.drawBoard();
                 break;
             default:
-                cout << "Invalid choice, please enter a number between 1 and 6" << endl;
+                cout << "Invalid choice, please enter a number between 1 and 8" << endl;
                 break;
         }
     }
@@ -79,4 +84,6 @@ void printMenu() {
     std::cout << "6. Display all cells" << std::endl;
     //run simulation
     std::cout << "7. Run simulation" << std::endl;
+    //draw board
+    std::cout << "8. Play board GUI" << std::endl;
 }

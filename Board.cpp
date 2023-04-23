@@ -172,6 +172,8 @@ void Board::createHopperBug(int bugId, int bugX, int bugY, int direction, int si
     Hopper *hopper = new Hopper(bugId, std::make_pair(bugX, bugY), static_cast<Direction>(direction), size, true,
                                 hopLength);
 
+    hopper->setType("Hopper");
+
     //add the first position to the path
     hopper->addPath(std::make_pair(bugX, bugY));
     //using the formula for the cells
@@ -185,6 +187,9 @@ void Board::createCrawlerBug(int bugId, int bugX, int bugY, int direction, int s
     //    Crawler(int id, std::pair<int, int> position, Direction direction, int size, bool alive);
     Crawler *crawler = new Crawler(bugId, std::make_pair(bugX, bugY), static_cast<Direction>(direction), size, true);
     //add the first position to the path#
+
+    crawler->setType("Crawler");
+
     crawler->addPath(std::make_pair(bugX, bugY));
     //using the formula for the cells
     int position = (bugY * BOARD_SIZE) + bugX;
@@ -197,6 +202,9 @@ void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int si
     //    Bishop(int id, std::pair<int, int> position, Direction direction, int size, bool alive, int bishopLength);
     Bishop *bishop = new Bishop(bugId, std::make_pair(bugX, bugY), static_cast<Direction>(direction), size, true,
                                 bishopLength);
+
+    bishop->setType("Bishop");
+
     //add the first position to the path
     bishop->addPath(std::make_pair(bugX, bugY));
     //using the formula for the cells
@@ -206,9 +214,9 @@ void Board::createBishopBug(int bugId, int bugX, int bugY, int direction, int si
 }
 
 //check if the bugs are empty
-//bool Board::isBugVectorEmpty() const {
-//    return bug_vector.empty();
-//}
+bool Board::isBoardEmpty() const {
+    return bugs.empty();
+}
 
 //check if the board is empty
 //bool Board::isBoardEmpty() const {
@@ -272,12 +280,10 @@ void Board::displayAllBugs() const {
 void Board::findBugById() const {
     int bugId = utils::readInt("Enter bug id: ");
     //i tried looking for teh most efficient way to do this, but i couldn't find anything
-    for (int i = 0; i < 100; i++) {
-        for (std::vector<Bug *>::const_iterator it = cells[i].cbegin(); it != cells[i].cend(); ++it) {
-            if ((*it)->getId() == bugId) {
-                (*it)->displayBug();
-                return;
-            }
+    for(Bug *bug : bugs) {
+        if(bug->getId() == bugId) {
+            bug->displayBug();
+            return;
         }
     }
     std::cout << "Bug " << bugId << " not found" << std::endl;
@@ -380,30 +386,24 @@ void Board::tapBoard() {
 //}
 
 void Board::displayLifeHistoryOfAllBugs(std::ostream &out) const {
-    for (int i = 0; i < 100; i++) {
-        for (Bug *bug: cells[i]) {
-            out << bug->getId() << " ";
-            if (dynamic_cast<Crawler *>(bug)) {
-                out << "Crawler";
-            } else if (dynamic_cast<Hopper *>(bug)) {
-                out << "Hopper";
-            } else if (dynamic_cast<Bishop *>(bug)) {
-                out << "Bishop";
+//    for (int i = 0; i < 100; i++) {
+    for (Bug *bug: bugs) {
+        out << bug->getId() << " ";
+        out << bug->getType() << " ";
+        out << " Path: ";
+        for (auto const &pos: bug->getPath()) {
+            out << "(" << pos.first << "," << pos.second << ")";
+            if (&pos != &bug->getPath().back()) {
+                out << ",";
             }
-            out << " Path: ";
-            for (auto const &pos: bug->getPath()) {
-                out << "(" << pos.first << "," << pos.second << ")";
-                if (&pos != &bug->getPath().back()) {
-                    out << ",";
-                }
-            }
-            // If the bug is dead, print the bug it was eaten by
-            if (!bug->isAlive()) {
-                out << " Eaten by " << bug->getPredator();
-            }
-            out << std::endl;
         }
+        // If the bug is dead, print the bug it was eaten by
+        if (!bug->isAlive()) {
+            out << " Eaten by " << bug->getPredator();
+        }
+        out << std::endl;
     }
+//    }
 }
 
 
@@ -446,20 +446,14 @@ void Board::displayAllCells() const {
             std::cout << "(" << i << "," << j << "): ";
             bool empty = true;
             // Loop through all bugs on the board to check if any are in this position
-            for (const auto &cell: cells) {
-                for (Bug *bug: cell) {
-                    if (bug->getPosition() == std::make_pair(i, j) && bug->isAlive()) {
-                        empty = false;
-                        if (dynamic_cast<Crawler *>(bug)) {
-                            std::cout << "Crawler " << bug->getId() << " ";
-                        } else if (dynamic_cast<Hopper *>(bug)) {
-                            std::cout << "Hopper " << bug->getId() << " ";
-                        } else if (dynamic_cast<Bishop *>(bug)) {
-                            std::cout << "Bishop " << bug->getId() << " ";
-                        }
-                    }
+//            for (const auto &cell: cells) {
+            for (Bug *bug: bugs) {
+                if (bug->getPosition() == std::make_pair(i, j) && bug->isAlive()) {
+                    empty = false;
+                    std::cout << bug->getType() << " " << bug->getId() << " ";
                 }
             }
+//            }
             if (empty) {
                 std::cout << "empty" << std::endl;
             } else {
@@ -474,13 +468,12 @@ void Board::displayAllCells() const {
 //Display progress on screen as simulation proceeds and write results to file.
 void Board::simulate() {
     int numBugs = countAliveBugs();
-    int round = 1;
     while (numBugs > 1) {
-        cout << "Round " << round << ":" << endl;
+        cout << "Round " << rounds << ":" << endl;
         tapBoard();
         displayAllBugs();
         numBugs = countAliveBugs();
-        round++;
+        rounds++;
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     cout << "Bug " << findLastAliveBug()->getId() << " is the survivor." << endl;
@@ -712,7 +705,7 @@ void Board::drawBoard() {
     //check if the superbug is already on the board
     bool superBugOnBoard = false;
     for (auto &bug: bugs) {
-        if (dynamic_cast<SuperBug *>(bug)) {
+        if(bug->getType() == "SuperBug"){
             superBugOnBoard = true;
         }
     }
@@ -720,12 +713,13 @@ void Board::drawBoard() {
     // Add the SuperBug to the board
     if(!superBugOnBoard) {
         SuperBug *superBug = new SuperBug(001, make_pair(7, 7), static_cast<Direction>(1), 20, true);
+        superBug->setType("SuperBug");
         bugs.push_back(superBug);
     }
 
     SuperBug *superBug;
     for (auto &bug: bugs) {
-        if (dynamic_cast<SuperBug *>(bug)) {
+        if(bug->getType() == "SuperBug"){
             superBug = dynamic_cast<SuperBug *>(bug);
         }
     }
@@ -777,7 +771,6 @@ void Board::drawBoard() {
     sf::Time timeElapsed = clock.getElapsedTime();
     sf::Time timeRemaining = sf::seconds(timerDuration) - timeElapsed;
     //for rounds
-    int round = 1;
 
     //create a pomiter for the selected bug
     Bug *selectedBug = nullptr;
@@ -801,7 +794,7 @@ void Board::drawBoard() {
         // check if time is up
         if (!isGameOver && timeRemaining.asSeconds() <= 0) {
             tapBoard();
-            round++;
+            rounds++;
             clock.restart();
         }
         // check if there is only one bug left
@@ -882,7 +875,7 @@ void Board::drawBoard() {
                 // handle left mouse button press
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 tapBoard();
-                round++;
+                rounds++;
                 clock.restart();
             }
 
@@ -1000,7 +993,7 @@ void Board::drawBoard() {
             if (bug->isAlive()) {
 
 
-                if (dynamic_cast<Crawler *>(bug)) {
+                if (bug->getType() == "Crawler") {
                     sprite.setTexture(crawlerTexture);
 
                     rotate(bug, sprite, offsetX, offsetY);
@@ -1015,7 +1008,7 @@ void Board::drawBoard() {
                         offsetY *= 0.08 + 0.00118 * bug->getSize();
 
                     }
-                } else if (dynamic_cast<Hopper *>(bug)) {
+                } else if (bug->getType() == "Hopper") {
                     sprite.setTexture(hopperTexture);
                     rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 213) {
@@ -1028,7 +1021,7 @@ void Board::drawBoard() {
                         offsetY *= 0.08 + 0.00094 * bug->getSize();
 
                     }
-                } else if (dynamic_cast<Bishop *>(bug)) {
+                } else if (bug->getType() == "Bishop") {
                     sprite.setTexture(bishopTexture);
                     rotate(bug, sprite, offsetX, offsetY);
                     if (bug->getSize() >= 118) {
@@ -1093,7 +1086,7 @@ void Board::drawBoard() {
         //create a text object to keep track of rounds
         sf::Text roundsText;
         roundsText.setFont(font);
-        roundsText.setString("Round: " + std::to_string((int) round));
+        roundsText.setString("Round: " + std::to_string((int) rounds));
         roundsText.setCharacterSize(30);
         roundsText.setPosition(1020, 100); // set the position in the menu bar
         roundsText.setFillColor(sf::Color::Black);
@@ -1113,15 +1106,16 @@ void Board::drawBoard() {
         // set the bug details text
         if (selectedBug != nullptr && selectedBug->isAlive()) {
             std::string details = "Type: ";
-            if (dynamic_cast<Crawler *>(selectedBug)) {
-                details += "Crawler\n";
-            } else if (dynamic_cast<Hopper *>(selectedBug)) {
-                details += "Hopper\n";
-            } else if (dynamic_cast<Bishop *>(selectedBug)) {
-                details += "Bishop\n";
-            } else {
-                details += "SuperBug\n";
-            }
+            details += selectedBug->getType() + "\n";
+//            if (dynamic_cast<Crawler *>(selectedBug)) {
+//                details += "Crawler\n";
+//            } else if (dynamic_cast<Hopper *>(selectedBug)) {
+//                details += "Hopper\n";
+//            } else if (dynamic_cast<Bishop *>(selectedBug)) {
+//                details += "Bishop\n";
+//            } else {
+//                details += "SuperBug\n";
+//            }
             details += "ID: " + std::to_string(selectedBug->getId()) + "\n";
             details += "Size: " + std::to_string(selectedBug->getSize()) + "\n";
             details += "Direction: " + std::to_string(selectedBug->getDirection()) + "\n";
@@ -1153,17 +1147,17 @@ void Board::drawBoard() {
         if (selectedBug != nullptr && selectedBug->isAlive()) {
             //get the bug type
             sf::Sprite sprite;
-            if (dynamic_cast<Crawler *>(selectedBug)) {
+            if (selectedBug->getType() == "Crawler") {
                 //draw the crawler in the menu bar
                 //set the texture of the sprite
                 sprite.setTexture(crawlerTexture);
                 sprite.setScale(0.7, 0.7);
-            } else if (dynamic_cast<Hopper *>(selectedBug)) {
+            } else if (selectedBug->getType() == "Hopper") {
                 //draw the hopper in the menu bar
                 //set the texture of the sprite
                 sprite.setTexture(hopperTexture);
                 sprite.setScale(0.7, 0.7);
-            } else if (dynamic_cast<Bishop *>(selectedBug)) {
+            } else if (selectedBug->getType() == "Bishop") {
                 //draw the bishop in the menu bar
                 //set the texture of the sprite
                 sprite.setTexture(bishopTexture);
@@ -1186,11 +1180,11 @@ void Board::drawBoard() {
         Bug *lastBug = findLastAliveBug();
         //draw the picture of the winner
         sf::Sprite winnerSprite;
-        if (dynamic_cast<Crawler *>(lastBug)) {
+        if (lastBug->getType() == "Crawler") {
             winnerSprite.setTexture(crawlerTexture);
-        } else if (dynamic_cast<Hopper *>(lastBug)) {
+        } else if (lastBug->getType() == "Hopper") {
             winnerSprite.setTexture(hopperTexture);
-        } else if (dynamic_cast<Bishop *>(lastBug)){
+        } else if (lastBug->getType() == "Bishop") {
             winnerSprite.setTexture(bishopTexture);
         }else{
             winnerSprite.setTexture(superBugTexture);
@@ -1239,7 +1233,7 @@ void Board::drawBoard() {
 
                 winner += "\nDirection: " + std::to_string(lastBug->getDirection());
 
-                winner += "\nNumber of Rounds: " + std::to_string(round);
+                winner += "\nNumber of Rounds: " + std::to_string(rounds);
 
                 //draw the text
                 sf::Text winnerText;
